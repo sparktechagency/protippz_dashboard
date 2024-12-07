@@ -16,15 +16,19 @@ const AppointmentsOverview = () => {
     // states 
     const [year, setYear] = useState(new Date().getFullYear())
     // rtk query 
+    const years = [new Date().getFullYear()]
+    years.push(new Date().getFullYear() + 1)
+    years.unshift(new Date().getFullYear() - 1)
     const { data: appointment } = useGetAppointmentOverviewQuery(year)
-    const { January, February, March, April, May, June, July, August, September, October, November, December } = appointment?.data?.monthlyData || {}
+    console.log(appointment)
+    const chartData = appointment?.data?.map(item => item?.userCount)
     // chart 
     const data = {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
             {
                 label: 'Monthly Data',
-                data: [January || 20, February || 10, March || 22, April || 14, May || 10, June || 12, July || 0, August || 0, September || 0, October || 0, November || 0, December || 0],
+                data: chartData || [],
                 backgroundColor: '#007bff',
                 borderRadius: 5,
             },
@@ -76,7 +80,7 @@ const AppointmentsOverview = () => {
         <div className='w-full h-full bg-[var(--bg-white)] rounded-md p-4'>
             <div className='between-center mb-6'>
                 <ChartsHeading heading={`User Growth`} growthData={growthData} />
-                <Select defaultValue={appointment?.data?.currentYear} className='min-w-32' placeholder='select year' onChange={(year) => setYear(year)} options={appointment?.data?.total_years.map((item) => ({ value: item, label: item }))} />
+                <Select defaultValue={appointment?.data?.currentYear} className='min-w-32' placeholder='select year' onChange={(year) => setYear(year)} options={years?.map((item) => ({ value: item, label: item }))} />
             </div>
             <div className='h-[300px]'>
                 <Bar data={data} options={options} />

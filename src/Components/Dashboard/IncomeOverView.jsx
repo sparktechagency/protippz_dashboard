@@ -19,9 +19,11 @@ const IncomeOverView = () => {
     // states 
     const [year, setYear] = useState(new Date().getFullYear())
     // rtk query 
+    const years = [new Date().getFullYear()]
+    years.push(new Date().getFullYear() + 1)
+    years.unshift(new Date().getFullYear() - 1)
     const { data: income, isLoading } = useGetIncomeOverviewQuery(year)
-
-    const { January, February, March, April, May, June, July, August, September, October, November, December } = income?.data?.monthlyData || {}
+    const chartData = income?.data?.map(item => item?.totalAmount)
     // chart
     const canvasRef = React.useRef(null);
     const data = {
@@ -29,7 +31,7 @@ const IncomeOverView = () => {
         datasets: [
             {
                 label: 'Monthly Data',
-                data: [January || 10, February || 30, March || 12, April || 16, May || 13, June || 25, July || 32, August || 16, September || 0, October || 0, November || 0, December || 0],
+                data: chartData || [],
                 borderColor: '#007bff',
                 borderWidth: 2,
                 fill: true,
@@ -112,7 +114,7 @@ const IncomeOverView = () => {
             }
             <div className='between-center mb-6'>
                 <ChartsHeading heading={`Tips Overview`} growthData={growthData} />
-                <Select className='min-w-32' defaultValue={income?.data?.currentYear} placeholder='select year' onChange={(year) => setYear(year)} options={income?.data?.total_years.map((item) => ({ value: item, label: item }))} />
+                <Select className='min-w-32' defaultValue={income?.data?.currentYear} placeholder='select year' onChange={(year) => setYear(year)} options={years?.map((item) => ({ value: item, label: item }))} />
             </div>
             <div className='h-[300px]'>
                 <Line ref={canvasRef} data={data} options={options} />

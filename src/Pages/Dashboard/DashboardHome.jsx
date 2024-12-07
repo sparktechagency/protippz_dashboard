@@ -15,28 +15,26 @@ import icon4 from '../../assets/icons/icon4.png'
 import RedeemRequest from '../../Components/Dashboard/RedeemRequest '
 const DashboardHome = () => {
     const { data, isLoading } = useGetDashboardDataQuery()
-
-    const { pending, accepted, rejected, completed } = data?.data?.total_appointment || {}
     const formatData = [
         {
             name: 'Total Users',
             icon: <img src={icon1} alt="" srcset="" />,
-            total: `$${data?.data?.total_deduction.toFixed(2) || 0}`
+            total: `$${data?.data?.totalUser || 0}`
         },
         {
             name: 'Total Leagues',
             icon: <img src={icon2} alt="" srcset="" />,
-            total: data?.data?.total_doctor || 0
+            total: data?.data?.totalLeague || 0
         },
         {
             name: 'Total Teams',
             icon: <img src={icon3} alt="" srcset="" />,
-            total: data?.data?.total_user || 0
+            total: data?.data?.totalTeam || 0
         },
         {
             name: 'Total Players',
             icon: <img src={icon4} alt="" srcset="" />,
-            total: pending + accepted + rejected + completed || 0
+            total: data?.data?.totalPlayer || 0
         },
     ]
     return (
