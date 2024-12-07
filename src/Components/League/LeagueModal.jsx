@@ -1,24 +1,31 @@
-import React, { useEffect } from 'react';
-import { Modal, Input, Button, Upload, Form } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Modal, Input, Button, Upload, Form, Image } from 'antd';
 import { CloseOutlined, CameraOutlined } from '@ant-design/icons';
+import { url } from '../../Utils/BaseUrl';
 
 const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
     const [form] = Form.useForm();
+    const [previewImage, setPreviewImage] = useState(null); // State to hold the image preview
+
     useEffect(() => {
         if (isEdit && leagueData) {
             form.setFieldsValue({
                 name: leagueData.name,
                 sport: leagueData.sport,
-                image: leagueData.image,
             });
+            setPreviewImage(`${url}/${leagueData.league_image}`); // Set preview image for editing
         } else {
-            form.resetFields(); // Reset form if adding a new league
+            form.resetFields();
+            setPreviewImage(null); // Reset preview when adding a new league
         }
     }, [isEdit, leagueData, form]);
 
     const handleFinish = (values) => {
-        onSubmit(values); // Pass form values to the onSubmit function
+        onSubmit(values);
         // onClose();
+    };
+    const handleImageChange = (info) => {
+        setPreviewImage(URL.createObjectURL(info.file));
     };
 
     return (
@@ -68,14 +75,33 @@ const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
                     <Upload
                         listType="picture-card"
                         maxCount={1}
-                        className="w-full border-dashed border-2 border-green-500"
+                        className=""
                         showUploadList={false}
                         beforeUpload={() => false}
+                        onChange={handleImageChange}
                     >
-                        <div className="flex flex-col items-center">
-                            <CameraOutlined className="text-green-500 mb-2" />
-                            <span className="text-green-500">{isEdit ? 'Change image' : 'Add image'}</span>
-                        </div>
+                        {/* Show preview image inside the upload area */}
+                        {previewImage ? (
+                            <div className="relative">
+                                <Image
+                                    width={100}
+                                    src={previewImage}
+                                    alt="Preview"
+                                    preview={false}
+                                />
+                                <Button
+                                    type="link"
+                                    icon={<CloseOutlined />}
+                                    onClick={() => setPreviewImage(null)} // Clear the preview when clicked
+                                    className="absolute top-0 right-0 text-red-500"
+                                />
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center">
+                                <CameraOutlined className="text-green-500 mb-2" />
+                                <span className="text-green-500">{isEdit ? 'Change image' : 'Add image'}</span>
+                            </div>
+                        )}
                     </Upload>
                 </Form.Item>
 

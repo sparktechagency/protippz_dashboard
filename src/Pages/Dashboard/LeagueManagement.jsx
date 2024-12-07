@@ -3,31 +3,19 @@ import { Table, Button, Input, Modal } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import LeagueModal from '../../Components/League/LeagueModal';
 import { Link } from 'react-router-dom';
-import { useGetAllLeagueQuery } from '../../Redux/Apis/leagueApis';
+import { useCreateLeagueMutation, useGetAllLeagueQuery, useUpdateLeagueMutation } from '../../Redux/Apis/leagueApis';
 import { url } from '../../Utils/BaseUrl';
+import toast from 'react-hot-toast';
 
 const LeagueManagement = () => {
+  const [page, setPage] = useState()
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedLeague, setSelectedLeague] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const { data } = useGetAllLeagueQuery()
-  const sampleData = [
-    {
-      id: '1233',
-      leagueName: 'NFL',
-      imageUrl: 'https://via.placeholder.com/40', // Placeholder image URL for demonstration
-      sport: 'Basketball',
-    },
-    {
-      id: '1234',
-      leagueName: 'WNBA',
-      imageUrl: 'https://via.placeholder.com/40',
-      sport: 'Basketball',
-    },
-    // Add more rows as needed
-  ];
-
+  const { data, isLoading: leagueLading, isFetching } = useGetAllLeagueQuery({ page, searchTerm: searchQuery })
+  const [create, { isLoading }] = useCreateLeagueMutation()
+  const [update, { isLoading: isEditing }] = useUpdateLeagueMutation()
   const handleAddLeague = () => {
     setIsAddModalVisible(true);
   };
@@ -47,14 +35,33 @@ const LeagueManagement = () => {
     });
   };
 
-  const handleAddSubmit = () => {
-    console.log('Add league submitted');
-    setIsAddModalVisible(false);
+  const handleAddSubmit = (value) => {
+    const { image, ...otherValues } = value
+    const formData = new FormData()
+    formData.append('data', JSON.stringify(otherValues))
+    formData.append('league_image', image?.file
+    )
+    create(formData).unwrap().then(res => {
+      toast.success(res?.message)
+      setIsAddModalVisible(false);
+    }).catch((err) => {
+      toast.error(err?.data?.message)
+    })
   };
 
   const handleEditSubmit = (value) => {
-    console.log('Edit league submitted', value);
-    setIsEditModalVisible(false);
+    const { image, ...otherValues } = value
+    const formData = new FormData()
+    formData.append('data', JSON.stringify(otherValues))
+    if (image?.file) {
+      formData.append('league_image', image?.file)
+    }
+    update({ id: selectedLeague?._id, data: formData }).unwrap().then(res => {
+      toast.success(res?.message)
+      setIsEditModalVisible(false);
+    }).catch((err) => {
+      toast.error(err?.data?.message)
+    })
   };
 
   const columns = [
@@ -128,15 +135,17 @@ const LeagueManagement = () => {
 
       {/* Table */}
       <Table
+        loading={leagueLading || isFetching}
         dataSource={data?.data?.result || []}
         columns={columns}
         rowKey="id"
         pagination={{
           position: ['bottomCenter'],
-          total: sampleData.length,
+          total: data?.data?.meta?.total,
           showTotal: (total, range) => `Showing ${range[0]}-${range[1]} out of ${total}`,
-          pageSize: 10,
+          pageSize: data?.data?.meta?.limit,
           showSizeChanger: false,
+          onChange: (page) => setPage(page)
         }}
         className="bg-white shadow-sm rounded-lg"
       />

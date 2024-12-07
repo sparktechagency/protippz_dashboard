@@ -2,40 +2,43 @@ import React, { useState } from 'react';
 import { Table, Button, Tag, Modal } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
 import UserImageName from './UserImageName';
+import { url } from '../../Utils/BaseUrl';
 const RewardTable = ({ data, pagination }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [modalContent, setModalContent] = useState(null);
     const handleActionClick = (record) => {
-        if (record.deliveryOption === 'Online') {
+        if (record.email) {
             setModalContent(
-                <div>
+                <div className='flex flex-col gap-2'>
                     <div className='flex justify-center items-center my-2'>
-                        <img src={record.rewardImage} alt="Reward" style={{ width: '100px' }} />
-                    </div>                    <p><strong>User's Name:</strong> {record.userName}</p>
-                    <p><strong>Email:</strong> {record.email}</p>
-                    <p><strong>Phone Number:</strong> {record.contactNumber}</p>
-                    <p><strong>Reward Name:</strong> {record.rewardName}</p>
-                    <p><strong>Category:</strong> {record.category}</p>
-                    <p><strong>Redeemed Points:</strong> {record.redeemedPoints}</p>
-                    <p><strong>Status:</strong> {record.status}</p>
-                    <p><strong>Description:</strong> {record.description}</p>
-                    <p><strong>Service:</strong> {record.status}</p>
+                        <img src={`${url}/${record?.reward?.reward_image}`} alt="Reward" style={{ width: '100px' }} />
+                    </div>
+                    <p><strong>User's Name:</strong> {record?.user?.name}</p>
+                    <p><strong>Email:</strong> {record?.email}</p>
+                    <p><strong>Phone Number:</strong> {record?.user?.phone}</p>
+                    <p><strong>Reward Name:</strong> {record?.reward?.name}</p>
+                    <p><strong>Category:</strong> {record?.category?.name}</p>
+                    <p><strong>Redeemed Points:</strong> {record.redeemedPoint}</p>
+                    <p><strong>Status:</strong> {record?.status}</p>
+                    <p><strong>Description:</strong> {record?.description}</p>
+                    <p><strong>Service:</strong> {record?.status}</p>
                 </div>
             );
-        } else if (record.deliveryOption === 'Offline') {
+        } else {
             setModalContent(
-                <div>
+                <div className='flex flex-col gap-2'>
                     <div className='flex justify-center items-center my-2'>
-                        <img src={record.rewardImage} alt="Reward" style={{ width: '100px' }} />
-                    </div>                    <p><strong>User's Name:</strong> {record.userName}</p>
-                    <p><strong>Email:</strong> {record.email}</p>
-                    <p><strong>Phone Number:</strong> {record.contactNumber}</p>
-                    <p><strong>Reward Name:</strong> {record.rewardName}</p>
-                    <p><strong>Category:</strong> {record.category}</p>
-                    <p><strong>Redeemed Points:</strong> {record.redeemedPoints}</p>
-                    <p><strong>Status:</strong> {record.status}</p>
-                    <p><strong>Shipping Address:</strong> {record.address}</p>
-                    <p><strong>Service:</strong> {record.status}</p>
+                        <img src={`${url}/${record?.reward?.reward_image}`} alt="Reward" style={{ width: '100px' }} />
+                    </div>
+                    <p><strong>User's Name:</strong> {record?.user?.name}</p>
+                    {/* <p><strong>Email:</strong> {record.email}</p> */}
+                    <p><strong>Phone Number:</strong> {record?.user?.phone}</p>
+                    <p><strong>Reward Name:</strong> {record?.reward?.name}</p>
+                    <p><strong>Category:</strong> {record?.category?.name}</p>
+                    <p><strong>Redeemed Points:</strong> {record.redeemedPoint}</p>
+                    <p><strong>Status:</strong> {record?.status}</p>
+                    <p><strong>Shipping Address:</strong> {record?.streetAddress} {record?.state} {record?.zipCode}</p>
+                    {/* <p><strong>Service:</strong> {record?.status}</p> */}
                 </div>
             );
         }
@@ -59,28 +62,31 @@ const RewardTable = ({ data, pagination }) => {
             dataIndex: 'userName',
             key: 'userName',
             render: (_, record) => (
-                <UserImageName name={record.userName} image={record.userImage} />
+                <UserImageName name={record.user?.name} image={record.user?.profile_image} />
             )
         },
         {
             title: 'Contact Number',
-            dataIndex: 'contactNumber',
-            key: 'contactNumber',
+            dataIndex: 'phone',
+            key: 'phone',
+            render: (_, record) => <span>{record?.user?.phone}</span>
         },
         {
             title: 'Reward Name',
-            dataIndex: 'rewardName',
-            key: 'rewardName',
+            dataIndex: 'reward',
+            key: 'reward',
+            render: (reward) => <span>{reward?.name}</span>
         },
         {
             title: 'Category',
             dataIndex: 'category',
             key: 'category',
+            render: (category) => <span>{category?.name}</span>
         },
         {
             title: 'Redeemed Points',
-            dataIndex: 'redeemedPoints',
-            key: 'redeemedPoints',
+            dataIndex: 'redeemedPoint',
+            key: 'redeemedPoint',
         },
         {
             title: 'Status',

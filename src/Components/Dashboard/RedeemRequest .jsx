@@ -6,7 +6,6 @@ import { useGetAllRedeemRequestQuery } from '../../Redux/Apis/redeemApis';
 
 const RedeemRequest = () => {
     const { data } = useGetAllRedeemRequestQuery({})
-    console.log(data)
     return (
         <>
             {
