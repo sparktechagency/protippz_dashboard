@@ -90,7 +90,7 @@ const TipManagement = () => {
             {
                 id: '1233',
                 date: '12/06/24',
-                userName: 'Kathryn Murp',
+                userName: 'Kathryn Mump',
                 userImage: null,
                 playerName: 'Darrell Steward',
                 tipAmount: 100

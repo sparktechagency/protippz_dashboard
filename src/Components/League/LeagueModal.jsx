@@ -4,12 +4,10 @@ import { CloseOutlined, CameraOutlined } from '@ant-design/icons';
 
 const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
     const [form] = Form.useForm();
-
-    // Set form fields with league data if editing
     useEffect(() => {
         if (isEdit && leagueData) {
             form.setFieldsValue({
-                leagueName: leagueData.leagueName,
+                name: leagueData.name,
                 sport: leagueData.sport,
                 image: leagueData.image,
             });
@@ -20,7 +18,7 @@ const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
 
     const handleFinish = (values) => {
         onSubmit(values); // Pass form values to the onSubmit function
-        onClose();
+        // onClose();
     };
 
     return (
@@ -42,7 +40,7 @@ const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
             >
                 <Form.Item
                     label="League Name"
-                    name="leagueName"
+                    name="name"
                     rules={[{ required: true, message: 'Please enter the league name' }]}
                 >
                     <Input
@@ -72,7 +70,7 @@ const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
                         maxCount={1}
                         className="w-full border-dashed border-2 border-green-500"
                         showUploadList={false}
-                        beforeUpload={() => false} // Prevent actual upload
+                        beforeUpload={() => false}
                     >
                         <div className="flex flex-col items-center">
                             <CameraOutlined className="text-green-500 mb-2" />

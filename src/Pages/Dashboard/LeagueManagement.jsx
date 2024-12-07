@@ -3,13 +3,15 @@ import { Table, Button, Input, Modal } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import LeagueModal from '../../Components/League/LeagueModal';
 import { Link } from 'react-router-dom';
+import { useGetAllLeagueQuery } from '../../Redux/Apis/leagueApis';
+import { url } from '../../Utils/BaseUrl';
 
 const LeagueManagement = () => {
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [selectedLeague, setSelectedLeague] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const { data } = useGetAllLeagueQuery()
   const sampleData = [
     {
       id: '1233',
@@ -50,31 +52,24 @@ const LeagueManagement = () => {
     setIsAddModalVisible(false);
   };
 
-  const handleEditSubmit = () => {
-    console.log('Edit league submitted');
+  const handleEditSubmit = (value) => {
+    console.log('Edit league submitted', value);
     setIsEditModalVisible(false);
   };
 
   const columns = [
     {
-      title: 'SL no.',
-      dataIndex: 'id',
-      key: 'id',
-      render: (text) => `#${text}`,
-      width: '10%',
-    },
-    {
       title: 'League Name',
-      dataIndex: 'leagueName',
-      key: 'leagueName',
+      dataIndex: 'name',
+      key: 'name',
       width: '20%',
     },
     {
       title: 'Image',
-      dataIndex: 'imageUrl',
-      key: 'imageUrl',
-      render: (imageUrl) => (
-        <img src={imageUrl || 'https://via.placeholder.com/40'} alt="League" className="w-10 h-10" />
+      dataIndex: 'league_image',
+      key: 'league_image',
+      render: (league_image) => (
+        <img src={league_image ? `${url}/${league_image}` : 'https://via.placeholder.com/40'} alt="League" className="w-10 h-10" />
       ),
       width: '15%',
     },
@@ -133,7 +128,7 @@ const LeagueManagement = () => {
 
       {/* Table */}
       <Table
-        dataSource={sampleData}
+        dataSource={data?.data?.result || []}
         columns={columns}
         rowKey="id"
         pagination={{

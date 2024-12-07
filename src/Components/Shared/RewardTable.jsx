@@ -48,12 +48,12 @@ const RewardTable = ({ data, pagination }) => {
     };
 
     const columns = [
-        {
-            title: 'SL no.',
-            dataIndex: 'id',
-            key: 'id',
-            render: (text) => `#${text}`
-        },
+        // {
+        //     title: 'SL no.',
+        //     dataIndex: 'id',
+        //     key: 'id',
+        //     render: (text) => `#${text}`
+        // },
         {
             title: "User's Name",
             dataIndex: 'userName',

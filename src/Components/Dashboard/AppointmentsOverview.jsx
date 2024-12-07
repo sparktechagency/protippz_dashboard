@@ -20,7 +20,6 @@ const AppointmentsOverview = () => {
     years.push(new Date().getFullYear() + 1)
     years.unshift(new Date().getFullYear() - 1)
     const { data: appointment } = useGetAppointmentOverviewQuery(year)
-    console.log(appointment)
     const chartData = appointment?.data?.map(item => item?.userCount)
     // chart 
     const data = {
