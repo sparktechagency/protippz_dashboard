@@ -23,13 +23,11 @@ const Login = () => {
     // handler
     const onSubmitLoginForm = (value) => {
         LoginUser(value).unwrap().then((res) => {
-            if (res.data?.role !== 'ADMIN') {
-                return toast.error('You are not authorized to access this page.')
-            }
-            localStorage.setItem('token', JSON.stringify(res?.token))
+            localStorage.setItem('token', JSON.stringify(res?.data?.accessToken))
             toast.success(res.data?.message || 'logged in successfully')
-            window.location.reload()
-            return navigate(location?.state || '/')
+            // window.location.reload()
+            // return navigate(location?.state || '/')
+            window.location.href = '/'
         })
             .catch((err) => toast.error(err.data.message || 'something went wrong'))
     }
@@ -82,8 +80,8 @@ const Login = () => {
                 </Form.Item>
                 <Button classNames={`button-black mt-8`} style={{
                     width: '100%',
-                    background:'var(--color-green)',
-                    border:'none',
+                    background: 'var(--color-green)',
+                    border: 'none',
                     borderRadius: '20px'
                 }} text={`Sign in`} />
             </Form>

@@ -75,7 +75,7 @@ const AppointmentsOverview = () => {
     return (
         <div className='w-full h-full bg-[var(--bg-white)] rounded-md p-4'>
             <div className='between-center mb-6'>
-                <ChartsHeading heading={`Appointments Overview`} growthData={growthData} />
+                <ChartsHeading heading={`User Growth`} growthData={growthData} />
                 <Select defaultValue={appointment?.data?.currentYear} className='min-w-32' placeholder='select year' onChange={(year) => setYear(year)} options={appointment?.data?.total_years.map((item) => ({ value: item, label: item }))} />
             </div>
             <div className='h-[300px]'>

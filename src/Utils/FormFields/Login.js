@@ -1,11 +1,11 @@
 export const LoginFields = [
     {
-        name: 'email',
-        label: 'Email Address',
+        name: 'userNameOrEmail',
+        label: 'Email Address Or Username',
         placeholder: 'siyamoffice0273@gmail.com',
         required: true,
-        message: 'please input your Email',
-        type: 'email',
+        message: 'please input your Email or user name',
+        type: 'text',
     },
     {
         name: 'password',

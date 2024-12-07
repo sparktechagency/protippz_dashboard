@@ -13,13 +13,13 @@ const Otp = () => {
     // handler
     const onSubmitLoginForm = value => {
         const data = {
-            ...value,
-            phone: JSON.parse(localStorage.getItem('phone'))
+            resetCode: Number(value?.resetCode),
+            email: JSON.parse(localStorage.getItem('email'))
         }
         verifyCode(data).unwrap().then((res) => {
             if (res?.success) {
-                localStorage.setItem('accessToken', JSON.stringify(res?.accessToken))
-                toast.success(res.message || 'Phone Number verified successfully')
+                // localStorage.setItem('accessToken', JSON.stringify(res?.accessToken))
+                toast.success(res.message || 'Email verified successfully')
                 return navigate('/reset-password')
             } else {
                 toast.error('something went wrong')
@@ -47,7 +47,7 @@ const Otp = () => {
                     enter 5 digit code that mentioned in the email</p>
                 <Form.Item
                     className='text-center'
-                    name={`code`}
+                    name={`resetCode`}
                     rules={[
                         {
                             required: true,
@@ -55,7 +55,7 @@ const Otp = () => {
                         }
                     ]}
                 >
-                    <Input.OTP length={6} {...sharedProps} />
+                    <Input.OTP length={5} {...sharedProps} />
                 </Form.Item>
                 <Button classNames={`button-black mt-8`} style={{
                     width: '100%',

@@ -1,6 +1,6 @@
 export const ForgetPasswordFields = [
     {
-        name: 'Email',
+        name: 'email',
         label: 'Email Address',
         placeholder: 'siyamoffice0273@gmail.com',
         required: true,

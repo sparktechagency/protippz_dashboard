@@ -6,7 +6,7 @@ const authApi = baseApi.injectEndpoints({
         loginUser: builder.mutation({
             query: (data) => {
                 return {
-                    url: 'auth/sign-in',
+                    url: 'auth/login',
                     method: 'POST',
                     body: data
                 }
@@ -17,7 +17,7 @@ const authApi = baseApi.injectEndpoints({
         forgetPassword: builder.mutation({
             query: (data) => {
                 return {
-                    url: 'auth/send-verify-email',
+                    url: 'auth/forget-password',
                     method: 'POST',
                     body: data
                 }
@@ -28,7 +28,7 @@ const authApi = baseApi.injectEndpoints({
         verifyCode: builder.mutation({
             query: (data) => {
                 return {
-                    url: 'auth/verify-code',
+                    url: 'auth/verify-reset-otp',
                     method: 'POST',
                     body: data
                 }
@@ -60,35 +60,12 @@ const authApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ['auth']
         }),
-        // update user 
-        updateUser: builder.mutation({
-            query: (data) => {
-                return {
-                    url: 'auth/update-user',
-                    method: 'PATCH',
-                    body: data,
-                }
-            },
-            invalidatesTags: ['auth']
-        }),
-        // update Doctor 
-        updateDoctor: builder.mutation({
-            query: ({ id, data }) => {
-                return {
-                    url: `auth/update-doctor/${id}`,
-                    method: 'PATCH',
-                    body: data,
-                }
-            },
-            invalidatesTags: ['auth']
-        }),
-        // get profile 
         getProfile: builder.query({
             query: () => {
                 const token = localStorage.getItem('token');
                 if (token) {
                     return {
-                        url: 'auth/profile',
+                        url: 'user/get-my-profile',
                         method: 'GET',
                     };
                 } else {

@@ -18,10 +18,14 @@ const ResetPassword = () => {
     const [resetPassword, { isLoading }] = useResetPasswordMutation()
     // handler
     const onSubmitLoginForm = value => {
-        resetPassword(value).unwrap().then((res) => {
+        const data = {
+            email: JSON.parse(localStorage.getItem("email")),
+            password: value?.password,
+            confirmPassword: value?.confirm_password
+        }
+        resetPassword(data).unwrap().then((res) => {
             if (res?.success) {
-                localStorage.removeItem('accessToken')
-                localStorage.removeItem('phone')
+                localStorage.removeItem('email')
                 toast.success(res.message || 'password Reset successfully please login')
                 return navigate('/login')
             } else {
