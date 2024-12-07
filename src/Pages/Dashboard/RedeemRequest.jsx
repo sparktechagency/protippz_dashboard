@@ -5,15 +5,16 @@ import { Link } from 'react-router-dom';
 import { Input } from 'antd';
 import { FaSearch } from 'react-icons/fa';
 import { useGetAllRedeemRequestQuery } from '../../Redux/Apis/redeemApis';
+import Loading from '../../Components/Shared/Loading';
 
 const RedeemRequest = () => {
     const [page, setPage] = useState(1)
     const [searchTerm, setSearchTerm] = useState('')
-    const { data,isLoading,isFetching } = useGetAllRedeemRequestQuery({ page, searchTerm })
+    const { data, isLoading, isFetching } = useGetAllRedeemRequestQuery({ page, searchTerm })
     return (
         <div className=' rounded-md'>
             {
-                //  && <Loading />
+                (isLoading || isFetching) && <Loading />
             }
             <div className='flex mb-6 mt-2 justify-between items-center gap-2'>
                 <div className='flex justify-start items-center gap-2'>

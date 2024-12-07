@@ -3,128 +3,93 @@ import { Table, Input, Button, Typography, Pagination } from 'antd';
 import { ArrowLeftOutlined, SearchOutlined } from '@ant-design/icons';
 import UserImageName from '../../Components/Shared/UserImageName';
 import { Link } from 'react-router-dom';
-
-const { Title } = Typography;
+import { useGetTipsQuery } from '../../Redux/Apis/tipApis';
 
 const TipManagement = () => {
     const [activeTab, setActiveTab] = useState('Player');
+    const [searchTerm, setSearchTerm] = useState('')
     const [currentPage, setCurrentPage] = useState(1);
+    const { data } = useGetTipsQuery({ entityType: activeTab, page: currentPage, searchTerm })
     const columns = {
         Player: [
-            {
-                title: 'SL no.',
-                dataIndex: 'id',
-                key: 'id',
-                render: (text) => `#${text}`,
-                width: '10%',
-            },
+            // {
+            //     title: 'SL no.',
+            //     dataIndex: 'id',
+            //     key: 'id',
+            //     render: (text) => `#${text}`,
+            //     width: '10%',
+            // },
             {
                 title: 'Date',
-                dataIndex: 'date',
-                key: 'date',
+                dataIndex: 'createdAt',
+                key: 'createdAt',
                 width: '15%',
+                render: (createdAt) => <span>{createdAt?.split('T')?.[0]}</span>
             },
             {
                 title: "User's Name",
                 dataIndex: 'userName',
                 key: 'userName',
                 render: (_, record) => (
-                    <UserImageName name={record.userName} image={record.userImage} />
+                    <UserImageName name={record?.user?.name} image={record?.user?.profile_image} />
                 ),
                 width: '25%',
             },
             {
                 title: 'Player Name',
-                dataIndex: 'playerName',
-                key: 'playerName',
+                dataIndex: 'entity',
+                key: 'entity',
                 width: '25%',
+                render: (entity) => <span>{entity?.name}</span>
             },
             {
                 title: 'Tip Amount',
-                dataIndex: 'tipAmount',
-                key: 'tipAmount',
+                dataIndex: 'amount',
+                key: 'amount',
                 render: (amount) => `$${amount}`,
                 width: '15%',
             }
         ],
         Team: [
-            {
-                title: 'SL no.',
-                dataIndex: 'id',
-                key: 'id',
-                render: (text) => `#${text}`,
-                width: '10%',
-            },
+            // {
+            //     title: 'SL no.',
+            //     dataIndex: 'id',
+            //     key: 'id',
+            //     render: (text) => `#${text}`,
+            //     width: '10%',
+            // },
             {
                 title: 'Date',
-                dataIndex: 'date',
-                key: 'date',
+                dataIndex: 'createdAt',
+                key: 'createdAt',
                 width: '15%',
+                render: (createdAt) => <span>{createdAt?.split('T')?.[0]}</span>
             },
             {
                 title: "User's Name",
                 dataIndex: 'userName',
                 key: 'userName',
                 render: (_, record) => (
-                    <UserImageName name={record.userName} image={record.userImage} />
+                    <UserImageName name={record?.user?.name} image={record?.user?.profile_image} />
                 ),
                 width: '25%',
             },
             {
                 title: 'Team Name',
-                dataIndex: 'teamName',
-                key: 'teamName',
+                dataIndex: 'entity',
+                key: 'entity',
                 width: '25%',
+                render: (entity) => <span>{entity?.name}</span>
             },
             {
                 title: 'Tip Amount',
-                dataIndex: 'tipAmount',
-                key: 'tipAmount',
+                dataIndex: 'amount',
+                key: 'amount',
                 render: (amount) => `$${amount}`,
                 width: '15%',
             }
         ]
     };
-    const sampleData = {
-        Player: [
-            {
-                id: '1233',
-                date: '12/06/24',
-                userName: 'Kathryn Mump',
-                userImage: null,
-                playerName: 'Darrell Steward',
-                tipAmount: 100
-            },
-            {
-                id: '1234',
-                date: '10/06/24',
-                userName: 'Devon Lane',
-                userImage: null,
-                playerName: 'Wade Warren',
-                tipAmount: 5
-            },
-        ],
-        Team: [
-            {
-                id: '1233',
-                date: '12/06/24',
-                userName: 'Kathryn Murp',
-                userImage: null,
-                teamName: 'New York Liberty',
-                tipAmount: 100
-            },
-            {
-                id: '1234',
-                date: '10/06/24',
-                userName: 'Devon Lane',
-                userImage: null,
-                teamName: 'Indiana Fever',
-                tipAmount: 5
-            },
-            // Add more sample rows as needed
-        ]
-    };
-
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setCurrentPage(1);
@@ -132,7 +97,7 @@ const TipManagement = () => {
 
     const handleSearch = (e) => {
         const value = e.target.value;
-        console.log('Search query:', value);
+        setSearchTerm(value);
     };
 
     return (
@@ -169,19 +134,19 @@ const TipManagement = () => {
 
             {/* Table */}
             <Table
-                dataSource={sampleData[activeTab]}
+                dataSource={data?.data?.result || []}
                 columns={columns[activeTab]}
-                pagination={false} // Disable internal pagination
+                pagination={false}
                 rowKey="id"
             />
 
             {/* Custom Pagination */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px' }}>
-                <span>Showing {(currentPage - 1) * 10 + 1}-{Math.min(currentPage * 10, sampleData[activeTab].length)} out of {sampleData[activeTab].length}</span>
+                <span>Showing {(currentPage - 1) * 10 + 1}-{Math.min(currentPage * 10, data?.data?.meta?.total)} out of {data?.data?.meta?.total}</span>
                 <Pagination
                     current={currentPage}
-                    total={sampleData[activeTab].length}
-                    pageSize={10}
+                    total={data?.data?.meta?.total}
+                    pageSize={data?.data?.meta?.limit}
                     onChange={(page) => setCurrentPage(page)}
                     showSizeChanger={false}
                 />
