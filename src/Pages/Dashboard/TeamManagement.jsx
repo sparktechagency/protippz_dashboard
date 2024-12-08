@@ -21,8 +21,8 @@ const TeamManagement = () => {
     const passwordRef = useRef()
 
     const [searchTerm, setSearchTerm] = useState('')
+    const [page, setPage] = useState(1)
     const [league, setLeague] = useState('')
-    const [page, setPage] = useState('')
     const [tipAmount, setTipAmount] = useState(0)
 
     const { data: leagueData, isLoading: leagueLading, isFetching } = useGetAllLeagueQuery({ limit: 9999999 })
@@ -112,7 +112,6 @@ const TeamManagement = () => {
     };
 
     const handleFinish = (values) => {
-        // console.log(values);
         const data = {
             league: values?.league,
             name: values?.name,
@@ -187,6 +186,7 @@ const TeamManagement = () => {
                 toast.error(err?.data?.message)
             })
     }
+    // console.log(test)
     return (
         <div className="p-4 h-screen overflow-y-scroll bg-[var(--bg-gray-20)]">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
@@ -195,7 +195,7 @@ const TeamManagement = () => {
                         <ArrowLeftOutlined style={{ color: '#52c41a', fontSize: '18px', cursor: 'pointer', marginRight: '8px' }} /></Link>
                     <h4 className="text-lg font-semibold">Team Management</h4>
                 </div>
-                <Input onChange={(e)=>setSearchTerm(e.target.value)} placeholder="Search here..." prefix={<FaSearch />} className="mb-6 w-64" />
+                <Input onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search here..." prefix={<FaSearch />} className="mb-6 w-64" />
             </div>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} className="bg-green-500 mb-3">Add</Button>
 
@@ -209,12 +209,13 @@ const TeamManagement = () => {
                         position: ['bottomCenter'],
                         pageSize: data?.data?.meta?.limit,
                         total: data?.data?.meta?.total,
-                        onChange: (page) => setPage(page)
+                        onChange: (page) => setPage(page),
+                        showSizeChanger: false
                     }
                 }
             />
 
-            <Modal visible={isAddEditModalVisible} onCancel={() => setIsAddEditModalVisible(false)} footer={null} centered>
+            <Modal open={isAddEditModalVisible} onCancel={() => setIsAddEditModalVisible(false)} footer={null} centered>
                 <h2 className="text-center font-semibold text-lg mb-6">{selectedTeam ? 'Edit Team' : 'Add Team'}</h2>
                 <Form form={form} layout="vertical" onFinish={handleFinish} initialValues={selectedTeam || {}}>
                     <Form.Item name="name" label="Team Name" rules={[{ required: true }]}>
@@ -293,6 +294,7 @@ const TeamManagement = () => {
                     <p>Total Tips: <span className="float-right">{selectedTeam?.totalTips}</span></p>
                     <p>Paid Amount: <span className="float-right">{selectedTeam?.paidAmount}</span></p>
                     <p>Due: <span className="float-right">{selectedTeam?.dueAmount}</span></p>
+                    <p>send money</p>
                     <Input value={tipAmount} onChange={(e) => setTipAmount(e?.target?.value)} type='number' placeholder="Enter Amount" />
                     <Button onClick={() => handleTip()} type="primary" className="w-full mt-4 bg-green-500">Confirm</Button>
                 </div>

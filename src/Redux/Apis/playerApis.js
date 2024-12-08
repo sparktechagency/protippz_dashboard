@@ -40,7 +40,7 @@ const playerApis = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['player']
         }),
-        sendTip: builder.mutation({
+        sendPlayerTip: builder.mutation({
             query: ({ id, data }) => ({
                 url: `player/send-money/${id}`,
                 method: 'PATCH',
@@ -57,5 +57,5 @@ export const {
     useUpdatePlayerMutation,
     useDeletePlayerMutation,
     useInvitePlayerMutation,
-    useSendTipMutation
+    useSendPlayerTipMutation
 } = playerApis;

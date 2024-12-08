@@ -1,12 +1,17 @@
 import { baseApi } from "../BaseUrl";
-
 const teamApis = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllTeam: builder.query({
-            query: ({ searchTerm, page }) => ({
-                url: `team/get-all`,
-                params: { searchTerm, page }
-            }),
+            query: ({ searchTerm, page, limit, league }) => {
+                const param = { searchTerm, page, limit }
+                if (league) {
+                    param.league = league
+                }
+                return ({
+                    url: `team/get-all`,
+                    params: param
+                })
+            },
             providesTags: ['team']
         }),
         createTeam: builder.mutation({
