@@ -4,21 +4,22 @@ const userApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         // get all user
         getAllUser: builder.query({
-            query: ({ page, filter }) => {
+            query: ({ page, searchTerm }) => {
                 return {
-                    url: `users?page=${page || 1}${filter?.email ? `&email=${filter?.email}` : ''}${filter?.search ? `&search=${filter?.search}` : ''}`,
-                    method: 'GET'
+                    url: `/normal-user/get-all`,
+                    method: 'GET',
+                    params: { page, searchTerm }
                 }
             },
             providesTags: ['users']
         }),
         // block user
         blockUser: builder.mutation({
-            query: (id) => {
+            query: ({ id, data }) => {
                 return {
-                    url: `/users/block/${id}`,
+                    url: `/user/change-status/${id}`,
                     method: 'PATCH',
-                    body: {}
+                    body: data
                 }
             },
             invalidatesTags: ['users']

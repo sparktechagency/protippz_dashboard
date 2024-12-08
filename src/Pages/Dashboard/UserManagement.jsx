@@ -1,60 +1,35 @@
 import React, { useState } from 'react';
-import { Table, Input, Typography, Switch } from 'antd';
+import { Table, Input, Typography, Switch, Spin } from 'antd';
 import { ArrowLeftOutlined, SearchOutlined } from '@ant-design/icons';
 import UserImageName from '../../Components/Shared/UserImageName';
 import { Link } from 'react-router-dom';
-
-const { Title } = Typography;
+import { useBlockUserMutation, useGetAllUserQuery } from '../../Redux/Apis/usersApi';
+import toast from 'react-hot-toast';
 
 const UserManagement = () => {
-    const [userData, setUserData] = useState([
-        {
-            id: '1233',
-            fullName: 'Kathryn Murp',
-            userImage: null, // Null image
-            email: 'bockely@att.com',
-            phoneNumber: '(201) 555-0124',
-            userName: 'bockely23',
-            address: 'West Greenwich, RI',
-            isActive: true,
-        },
-        {
-            id: '1234',
-            fullName: 'Devon Lane',
-            userImage: null, // Null image
-            email: 'csilvers@rizon.com',
-            phoneNumber: '(219) 555-0116',
-            userName: 'csilvers56',
-            address: 'Jericho, NY 11753',
-            isActive: false,
-        },
-        // Add more sample rows as needed
-    ]);
-
-    const handleStatusChange = (userId, isActive) => {
-        setUserData((prevData) =>
-            prevData.map((user) =>
-                user.id === userId ? { ...user, isActive } : user
-            )
-        );
+    const [page, setPage] = useState(1)
+    const [searchTerm, setSearchTerm] = useState('')
+    const { data, isLoading: fetching, isFetching } = useGetAllUserQuery({ page, searchTerm })
+    const [block, { isLoading }] = useBlockUserMutation()
+    const handleStatusChange = (userId, status) => {
+        block({ id: userId, data: { status } }).unwrap()
+            .then(res => {
+                toast.success(res?.message)
+            })
+            .catch(err => {
+                toast.error(err?.data?.message)
+            })
     };
 
     const columns = [
         {
-            title: 'SL no.',
-            dataIndex: 'id',
-            key: 'id',
-            render: (text) => `#${text}`,
-            width: '10%',
-        },
-        {
             title: 'Full Name',
-            dataIndex: 'fullName',
-            key: 'fullName',
+            dataIndex: 'name',
+            key: 'name',
             render: (_, record) => (
                 <UserImageName
-                    name={record.fullName}
-                    image={record.userImage}
+                    name={record.name}
+                    image={record.profile_image}
                 />
             ),
             width: '15%',
@@ -67,14 +42,15 @@ const UserManagement = () => {
         },
         {
             title: 'Phone Number',
-            dataIndex: 'phoneNumber',
-            key: 'phoneNumber',
+            dataIndex: 'phone',
+            key: 'phone',
             width: '15%',
+            render: (phone) => <span>{phone || "N/A"}</span>
         },
         {
             title: 'User Name',
-            dataIndex: 'userName',
-            key: 'userName',
+            dataIndex: 'username',
+            key: 'username',
             width: '15%',
         },
         {
@@ -87,14 +63,16 @@ const UserManagement = () => {
             title: 'Action',
             dataIndex: 'action',
             key: 'action',
-            render: (_, record) => (
-                <Switch
-                    checked={record.isActive}
-                    onChange={(checked) => handleStatusChange(record.id, checked)}
-                    checkedChildren="Activate"
-                    unCheckedChildren="Deactivate"
-                />
-            ),
+            render: (_, record) => {
+                return (
+                    <Switch
+                        checked={record?.user?.status == 'in-progress'}
+                        onChange={(checked) => handleStatusChange(record.user?._id, record?.user?.status == 'in-progress' ? 'blocked' : 'in-progress')}
+                        checkedChildren="Activate"
+                        unCheckedChildren="Deactivate"
+                    />
+                )
+            },
             width: '10%',
         }
     ];
@@ -113,22 +91,22 @@ const UserManagement = () => {
                     placeholder="Search here..."
                     prefix={<SearchOutlined />}
                     style={{ width: '250px' }}
-                    onChange={(e) => console.log('Search query:', e.target.value)}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                 />
             </div>
 
             {/* Table with Pagination */}
-            <Table
-                dataSource={userData}
+            <Table loading={isLoading || fetching || isFetching}
+                dataSource={data?.data?.result || []}
                 columns={columns}
                 rowKey="id"
                 pagination={{
                     position: ['bottomCenter'],
-                    total: 1239,
+                    total: data?.data?.meta?.total,
                     showTotal: (total, range) => `Showing ${range[0]}-${range[1]} out of ${total}`,
-                    pageSize: 10,
+                    pageSize: data?.data?.meta?.limit,
                     showSizeChanger: false,
-                    onChange: (page) => console.log('Page:', page)
+                    onChange: (page) => setPage(page)
                 }}
             />
         </div>
