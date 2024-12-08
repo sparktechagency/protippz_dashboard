@@ -195,7 +195,7 @@ const TeamManagement = () => {
                         <ArrowLeftOutlined style={{ color: '#52c41a', fontSize: '18px', cursor: 'pointer', marginRight: '8px' }} /></Link>
                     <h4 className="text-lg font-semibold">Team Management</h4>
                 </div>
-                <Input placeholder="Search here..." prefix={<FaSearch />} className="mb-6 w-64" />
+                <Input onChange={(e)=>setSearchTerm(e.target.value)} placeholder="Search here..." prefix={<FaSearch />} className="mb-6 w-64" />
             </div>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} className="bg-green-500 mb-3">Add</Button>
 
