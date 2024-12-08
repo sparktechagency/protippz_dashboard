@@ -1,52 +1,53 @@
 import React, { useState } from 'react';
-import { Table, Button, Input, Modal, Form, Upload, Select } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, CameraOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { Table, Button, Input, Modal, Form, Upload, Select, message, Image } from 'antd';
+import { PlusOutlined, EditOutlined, DeleteOutlined, CameraOutlined, ArrowLeftOutlined, CloseOutlined } from '@ant-design/icons';
 import { FaSearch } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import {
+    useGetAllRewardsQuery,
+    useCreateRewardMutation,
+    useUpdateRewardMutation,
+    useDeleteRewardMutation
+} from '../../Redux/Apis/rewardApis';
+import {
+    useGetAllRewardCategoriesQuery,
+    useCreateRewardCategoryMutation,
+    useUpdateRewardCategoryMutation,
+    useDeleteRewardCategoryMutation
+} from '../../Redux/Apis/rewardCategoryApis';
+import { url } from '../../Utils/BaseUrl';
+import toast from 'react-hot-toast';
 
 const RewardManagement = () => {
     const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
-    const [selectedView, setSelectedView] = useState('Reward'); // Toggle state between Reward and Category
+    const [selectedView, setSelectedView] = useState('Reward');
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [form] = Form.useForm();
 
-    const rewardData = [
-        {
-            id: '1233',
-            rewardName: 'VIP Tickets',
-            image: 'https://via.placeholder.com/40',
-            category: 'Tickets',
-            pointsRequired: 200,
-            description: 'Exclusive access to VIP...',
-        },
-        // Add more reward data as needed
-    ];
+    const [categoryImage, setCategoryImage] = useState(null)
+    const [searchTerm, setSearchTerm] = useState()
 
-    const categoryData = [
-        {
-            id: '1233',
-            categoryName: 'Tickets',
-            image: 'https://via.placeholder.com/40',
-        },
-        {
-            id: '1234',
-            categoryName: 'Shoes',
-            image: 'https://via.placeholder.com/40',
-        },
-        // Add more category data as needed
-    ];
+    const { data: rewardData, isLoading: isLoadingRewards } = useGetAllRewardsQuery({ searchTerm, page: 1 });
+    const { data: categoryData, isLoading: isLoadingCategories } = useGetAllRewardCategoriesQuery({ searchTerm, page: 1 });
+
+    const [createReward] = useCreateRewardMutation();
+    const [updateReward] = useUpdateRewardMutation();
+    const [deleteReward] = useDeleteRewardMutation();
+
+    const [createRewardCategory] = useCreateRewardCategoryMutation();
+    const [updateRewardCategory] = useUpdateRewardCategoryMutation();
+    const [deleteRewardCategory] = useDeleteRewardCategoryMutation();
 
     const rewardColumns = [
-        { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
-        { title: 'Reward Name', dataIndex: 'rewardName', key: 'rewardName' },
-        { title: 'Category', dataIndex: 'category', key: 'category' },
-        { title: 'Points Required', dataIndex: 'pointsRequired', key: 'pointsRequired' },
+        { title: 'Reward Name', dataIndex: 'name', key: 'name', },
+        { title: 'Category', dataIndex: 'category', key: 'category', render: (category) => `${category?.name}` },
+        { title: 'Points Required', dataIndex: 'pointRequired', key: 'pointRequired' },
         { title: 'Description', dataIndex: 'description', key: 'description' },
         {
             title: 'Image',
-            dataIndex: 'image',
-            key: 'image',
-            render: (url) => <img src={url} alt="reward" className="w-10 h-10" />
+            dataIndex: 'reward_image',
+            key: 'reward_image',
+            render: (reward_image) => <img src={`${url}/${reward_image}`} alt="reward" className="w-10 h-10" />
         },
         {
             title: 'Action',
@@ -56,7 +57,10 @@ const RewardManagement = () => {
                     <button onClick={() => handleEdit(record)} className="bg-green-500 text-white text-xl p-2 py-1 rounded-md">
                         <EditOutlined />
                     </button>
-                    <button className="bg-red-500 text-white text-xl p-2 py-1 rounded-md">
+                    <button
+                        onClick={() => handleDeleteReward(record.id)}
+                        className="bg-red-500 text-white text-xl p-2 py-1 rounded-md"
+                    >
                         <DeleteOutlined />
                     </button>
                 </div>
@@ -65,13 +69,13 @@ const RewardManagement = () => {
     ];
 
     const categoryColumns = [
-        { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
-        { title: 'Category Name', dataIndex: 'categoryName', key: 'categoryName' },
+        { title: 'Category Name', dataIndex: 'name', key: 'name' },
+        { title: 'Delivery Option', dataIndex: 'deliveryOption', key: 'deliveryOption' },
         {
             title: 'Image',
             dataIndex: 'image',
             key: 'image',
-            render: (url) => <img src={url} alt="category" className="w-10 h-10" />
+            render: (image) => <img src={`${url}/${image}`} alt="category" className="w-10 h-10" />
         },
         {
             title: 'Action',
@@ -81,7 +85,10 @@ const RewardManagement = () => {
                     <button onClick={() => handleEdit(record)} className="bg-green-500 text-white text-xl p-2 py-1 rounded-md">
                         <EditOutlined />
                     </button>
-                    <button className="bg-red-500 text-white text-xl p-2 py-1 rounded-md">
+                    <button
+                        onClick={() => handleDeleteCategory(record.id)}
+                        className="bg-red-500 text-white text-xl p-2 py-1 rounded-md"
+                    >
                         <DeleteOutlined />
                     </button>
                 </div>
@@ -90,6 +97,7 @@ const RewardManagement = () => {
     ];
 
     const handleAdd = () => {
+        form.resetFields()
         setSelectedRecord(null);
         setIsAddEditModalVisible(true);
     };
@@ -97,12 +105,112 @@ const RewardManagement = () => {
     const handleEdit = (record) => {
         setSelectedRecord(record);
         setIsAddEditModalVisible(true);
-        form.setFieldsValue(record);
+        // form.setFieldsValue(record);
+        if (selectedView === 'Category') {
+            form.setFieldsValue({
+                categoryName: record?.name,
+                deliveryOption: record?.deliveryOption
+            })
+            setCategoryImage(`${url}/${record?.image}`)
+        } else {
+            form.setFieldsValue({
+                name: record?.name,
+                category: record?.category?._id,
+                pointRequired: Number(record?.pointRequired),
+                description: record?.description,
+            })
+            setCategoryImage(`${url}/${record?.reward_image}`)
+        }
     };
 
-    const handleFinish = (values) => {
-        console.log(values);
-        setIsAddEditModalVisible(false);
+    const handleDeleteReward = async (id) => {
+        try {
+            await deleteReward(id).unwrap();
+            message.success('Reward deleted successfully');
+        } catch (error) {
+            message.error('Failed to delete reward');
+        }
+    };
+
+    const handleDeleteCategory = async (id) => {
+        try {
+            await deleteRewardCategory(id).unwrap();
+            message.success('Category deleted successfully');
+        } catch (error) {
+            message.error('Failed to delete category');
+        }
+    };
+
+    const handleFinish = async (values) => {
+        try {
+            if (selectedView === 'Reward') {
+                const data = {
+                    name: values?.name,
+                    category: values?.category,
+                    pointRequired: Number(values?.pointRequired),
+                    description: values?.description,
+                }
+                if (values?.category_image?.file) {
+                    data.reward_image = values?.category_image?.file
+                }
+                const formData = new FormData()
+                Object.keys(data)?.map(key => {
+                    formData.append(key, data[key])
+                })
+                if (selectedRecord) {
+                    updateReward({ id: selectedRecord._id, data: formData }).unwrap().then(res => {
+                        toast.success(res?.message)
+                        form.resetFields()
+                        setCategoryImage(null)
+                        setIsAddEditModalVisible(false);
+                    }).catch(err => {
+                        toast.error(err?.data?.message)
+                    })
+                } else {
+                    createReward(formData).unwrap().then(res => {
+                        toast.success(res?.message)
+                        form.resetFields()
+                        setCategoryImage(null)
+                        setIsAddEditModalVisible(false);
+                    }).catch(err => {
+                        toast.error(err?.data?.message)
+                    })
+                }
+            } else if (selectedView === 'Category') {
+                const data = {
+                    name: values?.categoryName,
+                    deliveryOption: values?.deliveryOption
+                }
+                if (values?.category_image?.file) {
+                    data.category_image = values?.category_image?.file
+                }
+                const formData = new FormData()
+                Object.keys(data)?.map(key => {
+                    formData.append(key, data[key])
+                })
+                if (selectedRecord) {
+                    updateRewardCategory({ id: selectedRecord._id, data: formData }).unwrap().then(res => {
+                        toast.success(res?.message)
+                        form.resetFields()
+                        setCategoryImage(null)
+                        setIsAddEditModalVisible(false);
+                    }).catch(err => {
+                        toast.error(err?.data?.message)
+                    })
+                } else {
+                    createRewardCategory(formData).unwrap().then(res => {
+                        toast.success(res?.message)
+                        form.resetFields()
+                        setCategoryImage(null)
+                        setIsAddEditModalVisible(false);
+                    }).catch(err => {
+                        toast.error(err?.data?.message)
+                    })
+                }
+            }
+        } catch (error) {
+            message.error('Failed to save');
+        }
     };
 
     return (
@@ -114,7 +222,7 @@ const RewardManagement = () => {
                     </Link>
                     <h4 className="text-lg font-semibold">Reward Management</h4>
                 </div>
-                <Input placeholder="Search here..." prefix={<FaSearch />} className="w-64" />
+                <Input onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search here..." prefix={<FaSearch />} className="w-64" />
             </div>
             <div className="flex space-x-2 mb-3">
                 <button
@@ -132,9 +240,10 @@ const RewardManagement = () => {
             </div>
             <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} className="bg-green-500 mb-3">Add</Button>
             <Table
-                dataSource={selectedView === 'Reward' ? rewardData : categoryData}
+                dataSource={selectedView === 'Reward' ? rewardData?.data?.result : categoryData?.data?.result}
                 columns={selectedView === 'Reward' ? rewardColumns : categoryColumns}
                 rowKey="id"
+                loading={isLoadingRewards || isLoadingCategories}
                 pagination={{ position: ['bottomCenter'], pageSize: 10 }}
             />
             <Modal visible={isAddEditModalVisible} onCancel={() => setIsAddEditModalVisible(false)} footer={null} centered>
@@ -142,34 +251,63 @@ const RewardManagement = () => {
                 <Form form={form} layout="vertical" onFinish={handleFinish}>
                     {selectedView === 'Reward' && (
                         <>
-                            <Form.Item name="rewardName" label="Reward Name" rules={[{ required: true }]}>
+                            <Form.Item name="name" label="Reward Name" rules={[{ required: true }]}>
                                 <Input placeholder="Enter reward name" />
                             </Form.Item>
                             <Form.Item name="category" label="Category" rules={[{ required: true }]}>
-                                <Select placeholder="Select category">
-                                    <Select.Option value="Tickets">Tickets</Select.Option>
-                                    <Select.Option value="Clothing">Clothing</Select.Option>
+                                <Select showSearch placeholder="Select category">
+                                    {
+                                        categoryData?.data?.result?.map(item => <Select.Option key={item?._id} value={item?._id}>{item?.name}</Select.Option>)
+                                    }
                                 </Select>
                             </Form.Item>
-                            <Form.Item name="pointsRequired" label="Points Required" rules={[{ required: true }]}>
+                            <Form.Item name="pointRequired" label="Points Required" rules={[{ required: true }]}>
                                 <Input placeholder="Enter points required" type="number" />
                             </Form.Item>
                             <Form.Item name="description" label="Description">
-                                <Input.TextArea placeholder="Enter description" />
+                                <Input.TextArea style={{
+                                    resize: 'none'
+                                }} placeholder="Enter description" />
                             </Form.Item>
                         </>
                     )}
                     {selectedView === 'Category' && (
-                        <Form.Item name="categoryName" label="Category Name" rules={[{ required: true }]}>
-                            <Input placeholder="Enter category name" />
-                        </Form.Item>
+                        <>
+                            <Form.Item name="categoryName" label="Category Name" rules={[{ required: true }]}>
+                                <Input placeholder="Enter category name" />
+                            </Form.Item>
+                            <Form.Item name="deliveryOption" label="delivery Option" rules={[{ required: true }]}>
+                                <Select
+                                    options={[
+                                        { label: 'Email', value: 'Email' },
+                                        { label: 'Shipping Address', value: 'Shipping Address' },
+                                    ]}
+                                />
+                            </Form.Item>
+                        </>
                     )}
-                    <Form.Item label="Image" name="image">
-                        <Upload listType="picture-card" maxCount={1} showUploadList={false} beforeUpload={() => false}>
-                            <div className="flex flex-col items-center">
-                                <CameraOutlined className="text-green-500 mb-2" />
-                                <span className="text-green-500">Add image</span>
-                            </div>
+                    <Form.Item label="Image" name="category_image">
+                        <Upload onChange={(info) => setCategoryImage(URL.createObjectURL(info.file))} listType="picture-card" maxCount={1} showUploadList={false} beforeUpload={() => false}>
+                            {
+                                categoryImage ? <div className="relative">
+                                    <Image
+                                        width={100}
+                                        src={categoryImage}
+                                        alt="Preview"
+                                        preview={false}
+                                    />
+                                    <Button
+                                        type="link"
+                                        icon={<CloseOutlined />}
+                                        onClick={() => setCategoryImage(null)}
+                                        className="absolute top-0 right-0 text-red-500"
+                                    />
+                                </div> : <div className="flex flex-col items-center">
+                                    <CameraOutlined className="text-green-500 mb-2" />
+                                    <span className="text-green-500">category</span>
+                                </div>
+                            }
+
                         </Upload>
                     </Form.Item>
                     <div className="flex justify-between mt-4">
