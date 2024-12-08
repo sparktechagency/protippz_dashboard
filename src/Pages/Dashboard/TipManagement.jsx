@@ -9,7 +9,7 @@ const TipManagement = () => {
     const [activeTab, setActiveTab] = useState('Player');
     const [searchTerm, setSearchTerm] = useState('')
     const [currentPage, setCurrentPage] = useState(1);
-    const { data } = useGetTipsQuery({ entityType: activeTab, page: currentPage, searchTerm })
+    const { data, isLoading, isFetching } = useGetTipsQuery({ entityType: activeTab, page: currentPage, searchTerm })
     const columns = {
         Player: [
             // {
@@ -134,6 +134,7 @@ const TipManagement = () => {
 
             {/* Table */}
             <Table
+                loading={isLoading || isFetching}
                 dataSource={data?.data?.result || []}
                 columns={columns[activeTab]}
                 pagination={false}

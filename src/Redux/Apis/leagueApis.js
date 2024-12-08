@@ -2,10 +2,10 @@ import { baseApi } from "../BaseUrl";
 const leagueApis = baseApi.injectEndpoints({
     endpoints: (builder) => ({
         getAllLeague: builder.query({
-            query: ({ page, searchTerm }) => ({
+            query: ({ page, searchTerm, limit }) => ({
                 url: `league/get-all`,
                 method: 'GET',
-                params: { page, searchTerm }
+                params: { page, searchTerm, limit }
             }),
             providesTags: ['league']
         }),
