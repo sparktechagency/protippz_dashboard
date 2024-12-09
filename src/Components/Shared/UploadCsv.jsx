@@ -1,11 +1,11 @@
-import { Upload } from 'antd';
+import { Spin, Upload } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { useUploadCsvMutation } from '../../Redux/Apis/manageApis';
 import { PlusOutlined } from '@ant-design/icons';
 import toast from 'react-hot-toast';
 
 const UploadCsv = ({ setOpenCsv }) => {
-    const [upload] = useUploadCsvMutation();
+    const [upload, { isLoading }] = useUploadCsvMutation();
     const handleUpload = (file) => {
         if (!file) {
             setMessage('Please select a file to upload.');
@@ -17,10 +17,10 @@ const UploadCsv = ({ setOpenCsv }) => {
         upload(formData)
             .unwrap()
             .then((response) => {
-                toast.success('File uploaded successfully!');
+                toast.success(response);
             })
             .catch((error) => {
-                toast.error('File upload failed.');
+                toast.error(error?.data);
             });
     };
 
@@ -34,10 +34,13 @@ const UploadCsv = ({ setOpenCsv }) => {
                 showUploadList={false}
                 className="border-dashed rounded-lg"
             >
-                <div className="flex flex-col items-center text-green-500">
-                    <PlusOutlined className="text-2xl mb-2" />
-                    <span>Add CSV File</span>
-                </div>
+                {
+                    isLoading ? <Spin /> : <div className="flex flex-col items-center text-green-500">
+                        <PlusOutlined className="text-2xl mb-2" />
+                        <span>Add CSV File</span>
+                    </div>
+                }
+
             </Upload.Dragger>
             <button
                 type="button"
