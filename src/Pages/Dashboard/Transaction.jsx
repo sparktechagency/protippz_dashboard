@@ -1,40 +1,32 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, Input } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { FaSearch } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import { useGetTransitionQuery } from '../../Redux/Apis/withdrawApis';
+import { url } from '../../Utils/BaseUrl';
 
 const Transaction = () => {
-    const data = [
-        { id: '1233', date: '12/06/24', name: 'Kathryn Murp', type: 'Deposit Funds', amount: '$500', image: 'https://via.placeholder.com/40' },
-        { id: '1234', date: '10/06/24', name: 'Devon Lane', type: 'Withdraw Funds', amount: '$1000', image: 'https://via.placeholder.com/40' },
-        { id: '1235', date: '10/06/24', name: 'Foysal Rahman', type: 'Withdraw Funds', amount: '$100', image: 'https://via.placeholder.com/40' },
-        { id: '1236', date: '05/06/24', name: 'Hari Danang', type: 'Deposit Funds', amount: '$500', image: 'https://via.placeholder.com/40' },
-        { id: '1237', date: '04/06/24', name: 'Floyd Miles', type: 'Withdraw Funds', amount: '$50', image: 'https://via.placeholder.com/40' },
-        { id: '1238', date: '04/06/24', name: 'Eleanor Pena', type: 'Deposit Funds', amount: '$1000', image: 'https://via.placeholder.com/40' },
-        { id: '1239', date: '04/06/24', name: 'Devon Lane', type: 'Deposit Funds', amount: '$750', image: 'https://via.placeholder.com/40' },
-        { id: '1240', date: '04/06/24', name: 'Hari Danang', type: 'Withdraw Funds', amount: '$50', image: 'https://via.placeholder.com/40' },
-        { id: '1241', date: '04/06/24', name: 'Hari Danang', type: 'Withdraw Funds', amount: '$100', image: 'https://via.placeholder.com/40' },
-        { id: '1242', date: '04/06/24', name: 'Hari Danang', type: 'Withdraw Funds', amount: '$50', image: 'https://via.placeholder.com/40' },
-        // Add more data as needed
-    ];
-
+    const [page, setPage] = useState(1)
+    const [searchTerm, setSearchTerm] = useState('')
+    const { data: transitions, isLoading, isFetching } = useGetTransitionQuery({ searchTerm, page })
+    console.log(transitions)
     const columns = [
-        { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
-        { title: 'Date', dataIndex: 'date', key: 'date' },
+        // { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
+        { title: 'Date', dataIndex: 'createdAt', key: 'createdAt', render: (createdAt) => `${createdAt?.split('T')?.[0]}` },
         {
             title: "User's Name",
-            dataIndex: 'name',
-            key: 'name',
-            render: (text, record) => (
+            dataIndex: 'entityId',
+            key: 'entityId',
+            render: (entityId, record) => (
                 <div className="flex items-center space-x-2">
-                    <img src={record.image} alt="profile" className="w-8 h-8 rounded-full" />
-                    <span>{text}</span>
+                    <img src={`${url}/${entityId?.profile_image}`} alt="profile" className="w-8 h-8 rounded-full" />
+                    <span>{entityId?.name}</span>
                 </div>
             ),
         },
-        { title: 'Type', dataIndex: 'type', key: 'type' },
-        { title: 'Amount', dataIndex: 'amount', key: 'amount' },
+        { title: 'Type', dataIndex: 'transactionType', key: 'transactionType' },
+        { title: 'Amount', dataIndex: 'amount', key: 'amount', render: (amount) => `$${amount}` },
     ];
 
     return (
@@ -46,13 +38,19 @@ const Transaction = () => {
                     </Link>
                     <h4 className="text-lg font-semibold">Transactions</h4>
                 </div>
-                <Input placeholder="Search here..." prefix={<FaSearch />} className="w-64" />
+                <Input onChange={(e) => setSearchTerm(e.target.value)} placeholder="Search here..." prefix={<FaSearch />} className="w-64" />
             </div>
             <Table
-                dataSource={data}
+                loading={isLoading || isFetching}
+                dataSource={transitions?.data?.result || []}
                 columns={columns}
                 rowKey="id"
-                pagination={{ position: ['bottomCenter'], pageSize: 10 }}
+                pagination={{
+                    position: ['bottomCenter'],
+                    pageSize: transitions?.data?.meta?.limit,
+                    total: transitions?.data?.meta?.total,
+                    onChange: (page) => setPage(page)
+                }}
             />
         </div>
     );
