@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Navigate, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { SettingLinks, SidebarLink } from '../../Utils/Sideber/SidebarLink';
 import { IoSettings } from 'react-icons/io5';
 import Button from './Button';
@@ -8,8 +8,8 @@ import { HiLogout } from 'react-icons/hi';
 import logo from '../../assets/logo.png'
 import { FaFileCsv } from 'react-icons/fa';
 import { Modal } from 'antd';
-import { Upload } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { useUploadCsvMutation } from '../../Redux/Apis/manageApis';
+import UploadCsv from './UploadCsv';
 const Sidebar = () => {
     // State
     const location = useLocation()
@@ -32,9 +32,12 @@ const Sidebar = () => {
             set_setting_active(false);
         }
     }, [ref, location.pathname])
+
+    const [upload] = useUploadCsvMutation()
+    const [uploadProgress, setUploadProgress] = useState(0)
     const handleUpload = (file) => {
-        console.log(file); // Handle the file upload logic here
-        return false; // Prevent automatic upload
+        console.log(file);
+        return false;
     };
     return (
         <div className='px-4 pb-10 flex justify-start flex-col gap-3 sidebar'>
@@ -128,30 +131,9 @@ const Sidebar = () => {
                 onCancel={() => setOpenCsv(false)}
                 title="Upload CSV File"
             >
-                <div className="space-y-4">
-                    <Upload.Dragger
-                        name="file"
-                        accept=".csv"
-                        beforeUpload={handleUpload}
-                        showUploadList={false}
-                        className="border-dashed rounded-lg"
-                    >
-                        <div className="flex flex-col items-center text-green-500">
-                            <PlusOutlined className="text-2xl mb-2" />
-                            <span>Add CSV File</span>
-                        </div>
-                    </Upload.Dragger>
-                    <button
-                        type="primary"
-                        className="w-full bg-green-500 mt-4 py-2 rounded-md text-white"
-                        onClick={() => {
-                            console.log("File uploaded");
-                            setOpenCsv(false);
-                        }}
-                    >
-                        Upload
-                    </button>
-                </div>
+                <UploadCsv
+                    setOpenCsv={setOpenCsv}
+                />
             </Modal>
 
         </div >

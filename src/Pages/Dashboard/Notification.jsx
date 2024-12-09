@@ -3,14 +3,19 @@ import Button from '../../Components/Shared/Button'
 import { MdDelete } from 'react-icons/md'
 import { useSocketContext } from '../../Context/SocketContext'
 import Loading from '../../Components/Shared/Loading'
-import { useReadAllNotificationsMutation, useReadSingleNotificationMutation } from '../../Redux/Apis/notificationsApis'
+import { useGetNotificationsQuery, useReadAllNotificationsMutation, useReadSingleNotificationMutation } from '../../Redux/Apis/notificationsApis'
+import { useState } from 'react'
+import { useGetNotificationQuery } from '../../Redux/Apis/manageApis'
 
 
 const Notification = () => {
+    const [limit, setLimit] = useState(50)
     const { isLoadingNotifications, notifications, totalNotifications, setNotificationLimit, notificationLimit } = useSocketContext();
+    const { data } = useGetNotificationQuery(limit)
     //rtk query
-    const [readSingleNotification] = useReadSingleNotificationMutation()
-    const [readAllNotifications] = useReadAllNotificationsMutation()
+    // const [readSingleNotification] = useReadSingleNotificationMutation()
+    // const [readAllNotifications] = useReadAllNotificationsMutation()
+    console.log(data)
     return (
         <div className='bg-[var(--bg-white-20)] p-4 rounded-md'>
             {
@@ -20,20 +25,20 @@ const Notification = () => {
             <div className='between-center mt-5 mb-5'>
                 <p className='heading '>Total {totalNotifications} Notifications</p>
                 <div className='text-end'>
-                    <Button style={{ padding: '10px 20px' }} text={"read all"} classNames="button-blue w-full mt-5 " handler={() => readAllNotifications()} ></Button>
+                    {/* <Button style={{ padding: '10px 20px' }} text={"read all"} classNames="button-blue w-full mt-5 " handler={() => readAllNotifications()} ></Button> */}
                 </div>
             </div>
             <div className='start-start gap-2 flex-col'>
                 {
-                    notifications?.map((item, i) => (
+                    data?.data?.result?.map((item, i) => (
                         <div onClick={() => {
                             const data = { notificationIds: [item?._id] }
-                            readSingleNotification({ data })
+                            // readSingleNotification({ data })
                         }} className={`grid-cols-7 w-full grid gap-4 card-shadow rounded-md p-2 cursor-pointer ${item?.isRead ? 'bg-[var(--bg-white)]' : 'bg-[var(--bg-gray-20)]'}`} key={i}>
                             <div className='between-center col-span-7 w-full gap-4'>
                                 <div>
                                     <p className='font-medium'>{item?.title?.slice(0, 100)}</p>
-                                    <p className='text-sm'>{item?.body?.slice(0, 100)}</p>
+                                    <p className='text-sm'>{item?.message?.slice(0, 100)}</p>
                                 </div>
                                 <div>
                                     <p className='text-xs'>{item?.createdAt?.split('T')?.[1]?.split('.')[0]}</p>

@@ -1,3 +1,4 @@
+
 import { baseApi } from "../BaseUrl";
 
 const manageApis = baseApi.injectEndpoints({
@@ -79,6 +80,20 @@ const manageApis = baseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
+        getNotification: builder.query({
+            query: (limit) => ({
+                url: '/notification/get-notifications',
+                method: 'GET',
+                params: { limit }
+            }),
+        }),
+        uploadCsv: builder.mutation({
+            query: (data) => ({
+                url: '/upload-csv',
+                method: 'POST',
+                body: data
+            }),
+        }),
     }),
 });
 
@@ -91,7 +106,9 @@ export const {
     useAddPrivacyPolicyMutation,
     useGetPrivacyPolicyQuery,
     useAddPartnerMutation,
-    useGetPartnerQuery
+    useGetPartnerQuery,
+    useGetNotificationQuery,
+    useUploadCsvMutation
 } = manageApis;
 
 export default manageApis;
