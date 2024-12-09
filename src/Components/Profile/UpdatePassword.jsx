@@ -19,7 +19,12 @@ const UpdatePassword = () => {
     const onSubmitResetForm = value => {
         if (value?.old_password === value.password) return toast.error('your old password cant be your new password')
         if (value?.confirm_password !== value.password) return toast.error("confirm password doesn't match")
-        changePassword(value).unwrap().then((res) => {
+        const data = {
+            oldPassword: value?.old_Password,
+            newPassword: value?.password,
+            confirmNewPassword: value?.confirm_password
+        }
+        changePassword(data).unwrap().then((res) => {
             if (res.success) {
                 toast.success(res.message || 'Password Changed Successfully')
                 form.resetFields()

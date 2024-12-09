@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react'
 import PageHeading from '../../Components/Shared/PageHeading';
 import Editor from '../../Components/Shared/Editor';
 import Button from '../../Components/Shared/Button';
-import { useAddAboutTermsPrivacyMutation, useGetAboutTermsPrivacyQuery } from '../../Redux/Apis/settingApi';
 import Loading from '../../Components/Shared/Loading';
 import toast from 'react-hot-toast';
+import { useAddTermsConditionsMutation, useGetTermsConditionsQuery } from '../../Redux/Apis/manageApis';
 
 const TermsCondition = () => {
     //states 
     const [content, setContent] = useState('');
     // rtk query
-    const [addTerms, { isLoading }] = useAddAboutTermsPrivacyMutation();
-    const { data, isLoading: LoadingData, isError, error, isFetching } = useGetAboutTermsPrivacyQuery('terms')
+    const [addTerms, { isLoading }] = useAddTermsConditionsMutation();
+    const { data, isLoading: LoadingData, isError, error, isFetching } = useGetTermsConditionsQuery()
     // handler 
     const AddPrivacyHandler = () => {
-        addTerms({ value: content, name: 'terms' }).unwrap().then((res) => toast.success(res?.message || 'Privacy policy added successfully')).catch((err) => toast.error(err?.data?.message || 'something went wrong'))
+        addTerms({ description: content }).unwrap().then((res) => toast.success(res?.message || 'Privacy policy added successfully')).catch((err) => toast.error(err?.data?.message || 'something went wrong'))
     }
     useEffect(() => {
-        if (data) setContent(data?.data?.value)
+        if (data) setContent(data?.data?.description)
     }, [data])
     return (
         <div className='bg-[var(--bg-gray-20)] p-4 rounded-md'>

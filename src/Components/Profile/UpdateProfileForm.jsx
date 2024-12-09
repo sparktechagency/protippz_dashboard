@@ -13,10 +13,12 @@ const UpdateProfileForm = ({ image, data }) => {
     const [updateProfile, { isLoading }] = useUpdateUserMutation()
     //handler
     const onUpdateProfile = values => {
+        const { email, username, ...otherValues } = values
+        const formData = new FormData()
+        formData.append('data', JSON.stringify(otherValues))
         if (image) {
-            values.img = image
+            formData.append('profile_image', image)
         }
-        const formData = makeFormData(values)
         updateProfile(formData).unwrap().then((res) => {
             if (res?.success) {
                 toast.success(res.message || 'Profile Updated successfully')
@@ -55,7 +57,7 @@ const UpdateProfileForm = ({ image, data }) => {
                             }
                         ]}
                     >
-                        <Input className={`input ${item?.name === 'email' ? 'pointer-events-none' : ''}`} type={item?.type} placeholder={item?.placeholder} />
+                        <Input className={`input ${(item?.name === 'email' || item?.name === 'username') ? 'pointer-events-none' : ''}`} type={item?.type} placeholder={item?.placeholder} />
                     </Form.Item>
                 })
             }

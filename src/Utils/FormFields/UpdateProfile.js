@@ -16,6 +16,14 @@ export const UpdateProfileFields = [
         type: 'email',
     },
     {
+        name: 'username',
+        label: 'username',
+        placeholder: 'shaharulsiyam',
+        required: true,
+        message: 'please input your email address',
+        type: 'text',
+    },
+    {
         name: 'phone',
         label: 'Phone Number',
         placeholder: '8801566026301',
@@ -23,21 +31,13 @@ export const UpdateProfileFields = [
         message: 'please input your Phone Number',
         type: 'number',
     },
-    {
-        name: 'date_of_birth',
-        label: 'Date of birth',
-        placeholder: '26-02-2002',
-        required: true,
-        message: 'please input your Date Of Birth',
-        type: 'date',
-    },
 
     {
-        name: 'location',
+        name: 'address',
         label: 'Location',
         placeholder: 'bogra bangladesh',
         required: true,
-        message: 'please input your Location',
+        message: 'please input your address',
         type: 'text',
     },
 

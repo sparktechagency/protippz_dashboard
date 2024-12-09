@@ -5,15 +5,15 @@ import { MdDelete, MdNotInterested } from 'react-icons/md'
 import { FaPlus } from 'react-icons/fa6'
 import { Modal } from 'antd'
 import AddFaqForm from '../../Components/FAQ/AddFaqForm'
-import { useAddFaqMutation, useDeleteFaqMutation, useGetAllFaqQuery } from '../../Redux/Apis/faq'
 import Loading from '../../Components/Shared/Loading'
 import toast from 'react-hot-toast'
+import { useAddFaqMutation, useDeleteFaqMutation, useGetFaqQuery } from '../../Redux/Apis/manageApis'
 
 const FAQ = () => {
     // sates 
     const [openModal, setOpenModal] = useState()
     //rtk query
-    const { data, isLoading, isError } = useGetAllFaqQuery()
+    const { data, isLoading, isError } = useGetFaqQuery()
     const [addFaq, { isLoading: loading }] = useAddFaqMutation()
     const [deleteFaq, { isLoading: deleteLoading }] = useDeleteFaqMutation()
     //  handler 

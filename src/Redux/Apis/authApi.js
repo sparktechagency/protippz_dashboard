@@ -43,8 +43,18 @@ const authApi = baseApi.injectEndpoints({
                     method: 'POST',
                     body: data,
                     headers: {
-                        Authorization: `Bearer ${JSON.parse((localStorage.getItem('accessToken'))) || ""}`,
+                        Authorization: `${JSON.parse((localStorage.getItem('accessToken'))) || ""}`,
                     }
+                }
+            },
+            invalidatesTags: ['auth']
+        }),
+        updateUser: builder.mutation({
+            query: (data) => {
+                return {
+                    url: 'super-admin/update-profile',
+                    method: 'PATCH',
+                    body: data,
                 }
             },
             invalidatesTags: ['auth']
@@ -54,7 +64,7 @@ const authApi = baseApi.injectEndpoints({
             query: (data) => {
                 return {
                     url: 'auth/change-password',
-                    method: 'PATCH',
+                    method: 'POST',
                     body: data
                 }
             },
@@ -91,7 +101,6 @@ export const {
     // update user 
     useUpdateUserMutation,
     // update doctor
-    useUpdateDoctorMutation,
     // get profile 
     useGetProfileQuery,
 } = authApi
