@@ -3,7 +3,7 @@ import { Table, Button, Input, Modal } from 'antd';
 import { EditOutlined, DeleteOutlined, PlusOutlined, SearchOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import LeagueModal from '../../Components/League/LeagueModal';
 import { Link } from 'react-router-dom';
-import { useCreateLeagueMutation, useGetAllLeagueQuery, useUpdateLeagueMutation } from '../../Redux/Apis/leagueApis';
+import { useCreateLeagueMutation, useDeleteLeagueMutation, useGetAllLeagueQuery, useUpdateLeagueMutation } from '../../Redux/Apis/leagueApis';
 import { url } from '../../Utils/BaseUrl';
 import toast from 'react-hot-toast';
 
@@ -16,6 +16,7 @@ const LeagueManagement = () => {
   const { data, isLoading: leagueLading, isFetching } = useGetAllLeagueQuery({ page, searchTerm: searchQuery })
   const [create, { isLoading }] = useCreateLeagueMutation()
   const [update, { isLoading: isEditing }] = useUpdateLeagueMutation()
+  const [deleteLeague, { isLoading: isDeleting }] = useDeleteLeagueMutation()
   const handleAddLeague = () => {
     setIsAddModalVisible(true);
   };
@@ -29,8 +30,12 @@ const LeagueManagement = () => {
     Modal.confirm({
       title: 'Are you sure you want to delete this league?',
       onOk: () => {
-        console.log('League deleted:', leagueId);
-        // Implement delete logic here
+        deleteLeague(leagueId)
+          .then(res => {
+            toast.success(res?.data?.message)
+          }).catch(err => {
+            toast.error(err?.data?.message)
+          })
       },
     });
   };
@@ -100,7 +105,7 @@ const LeagueManagement = () => {
           <Button
             type="danger"
             icon={<DeleteOutlined />}
-            onClick={() => handleDeleteLeague(record.id)}
+            onClick={() => handleDeleteLeague(record._id)}
             className="bg-red-500 border-none text-white"
           />
         </div>
@@ -135,7 +140,7 @@ const LeagueManagement = () => {
 
       {/* Table */}
       <Table
-        loading={leagueLading || isFetching}
+        loading={leagueLading || isFetching || isDeleting || isLoading}
         dataSource={data?.data?.result || []}
         columns={columns}
         rowKey="id"

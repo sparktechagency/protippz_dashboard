@@ -241,8 +241,8 @@ const PlayerManagement = () => {
         { title: 'Position', dataIndex: 'position', key: 'position' },
         {
             title: 'Profile Image',
-            dataIndex: 'player_bg_image',
-            key: 'player_bg_image',
+            dataIndex: 'player_image',
+            key: 'player_image',
             render: (player_image) => <img src={`${url}/${player_image}`} alt="bg" className="w-14 h-10" />
         },
         {

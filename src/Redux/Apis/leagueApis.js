@@ -25,10 +25,18 @@ const leagueApis = baseApi.injectEndpoints({
             }),
             invalidatesTags: ['league']
         }),
+        deleteLeague: builder.mutation({
+            query: (id) => ({
+                url: `league/delete/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['league']
+        }),
     })
 })
 export const {
     useGetAllLeagueQuery,
     useCreateLeagueMutation,
-    useUpdateLeagueMutation
+    useUpdateLeagueMutation,
+    useDeleteLeagueMutation
 } = leagueApis
