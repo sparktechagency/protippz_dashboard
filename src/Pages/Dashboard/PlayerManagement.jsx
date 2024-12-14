@@ -251,24 +251,24 @@ const PlayerManagement = () => {
             key: 'player_bg_image',
             render: (player_bg_image) => <img src={`${url}/${player_bg_image}`} alt="bg" className="w-14 h-10" />
         },
-        {
-            title: 'Tips Details',
-            key: 'tipsDetails',
-            render: (_, record) => (
-                <button onClick={() => handleTipsDetails(record)} className="bg-yellow-500 text-white text-xl p-2 py-1 rounded-md">
-                    <EyeOutlined />
-                </button>
-            ),
-        },
-        {
-            title: 'Invite',
-            key: 'invite',
-            render: (_, record) => (
-                <button onClick={() => handleInvite(record)} className="bg-blue-500 text-white text-xl p-2 py-1 rounded-md">
-                    <MailOutlined />
-                </button>
-            ),
-        },
+        // {
+        //     title: 'Tips Details',
+        //     key: 'tipsDetails',
+        //     render: (_, record) => (
+        //         <button onClick={() => handleTipsDetails(record)} className="bg-yellow-500 text-white text-xl p-2 py-1 rounded-md">
+        //             <EyeOutlined />
+        //         </button>
+        //     ),
+        // },
+        // {
+        //     title: 'Invite',
+        //     key: 'invite',
+        //     render: (_, record) => (
+        //         <button onClick={() => handleInvite(record)} className="bg-blue-500 text-white text-xl p-2 py-1 rounded-md">
+        //             <MailOutlined />
+        //         </button>
+        //     ),
+        // },
         {
             title: 'Action',
             key: 'action',
