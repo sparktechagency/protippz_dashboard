@@ -19,7 +19,7 @@ const DashboardHome = () => {
         {
             name: 'Total Users',
             icon: <img src={icon1} alt="" srcset="" />,
-            total: `$${data?.data?.totalUser || 0}`
+            total: `${data?.data?.totalUser || 0}`
         },
         {
             name: 'Total Leagues',

@@ -191,7 +191,7 @@
 // };
 
 // export default PlayerManagement;
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   Table,
   Button,
@@ -202,7 +202,7 @@ import {
   Select,
   message,
   Image,
-  Spin,
+  Popconfirm,
 } from "antd";
 import {
   PlusOutlined,
@@ -229,6 +229,7 @@ import { useGetAllLeagueQuery } from "../../Redux/Apis/leagueApis";
 import { useGetAllTeamQuery } from "../../Redux/Apis/teamApis";
 import { url } from "../../Utils/BaseUrl";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 const PlayerManagement = () => {
   const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
@@ -340,11 +341,17 @@ const PlayerManagement = () => {
             <EditOutlined />
           </button>
           <button
+            onClick={() => handleDelete(record?._id)}
+            className="bg-red-500 border-none text-white text-xl p-2 py-1 rounded-md"
+          >
+            <DeleteOutlined />
+          </button>
+          {/* <button
             onClick={() => handleDelete(record._id)}
             className="bg-red-500 text-white text-xl p-2 py-1 rounded-md"
           >
             <DeleteOutlined />
-          </button>
+          </button> */}
         </div>
       ),
     },
@@ -375,18 +382,50 @@ const PlayerManagement = () => {
     setSelectedPlayer(player);
     setIsTipsDetailsModalVisible(true);
   };
+  const [invitedData, setInvitedData] = useState(null);
 
   const handleInvite = (player) => {
+    console.log(player);
+    const data = {
+      userName: player.username,
+      password: player.invitedPassword,
+    };
+    setInvitedData(data);
     setSelectedPlayer(player);
     setIsInviteModalVisible(true);
   };
 
   const handleDelete = async (id) => {
-    try {
-      await deletePlayer(id).unwrap();
-      message.success("Player deleted successfully");
-    } catch (error) {
-      message.error("Failed to delete player");
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deletePlayer(id).unwrap();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+        message.success("Player deleted successfully");
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to delete player.",
+          icon: "error",
+        });
+        message.error("Failed to delete player");
+      }
+    } else {
+      message.info("Delete operation canceled");
     }
   };
 
@@ -553,7 +592,9 @@ const PlayerManagement = () => {
               placeholder="Select league"
             >
               {leagueData?.data?.result?.map((item) => (
-                <Select.Option value={item?._id}>{item?.name}</Select.Option>
+                <Select.Option key={item?._id} value={item?._id}>
+                  {item?.name}
+                </Select.Option>
               ))}
             </Select>
           </Form.Item>
@@ -563,7 +604,9 @@ const PlayerManagement = () => {
                 <Select.Option value="">please wait loading....</Select.Option>
               ) : (
                 teams?.data?.result?.map((item) => (
-                  <Select.Option value={item?._id}>{item?.name}</Select.Option>
+                  <Select.Option key={item?._id} value={item?._id}>
+                    {item?.name}
+                  </Select.Option>
                 ))
               )}
             </Select>
@@ -708,6 +751,7 @@ const PlayerManagement = () => {
           className="space-y-4"
         >
           <Form.Item
+            initialValue={invitedData?.userName}
             rules={[
               {
                 message: "username is required",
@@ -718,6 +762,7 @@ const PlayerManagement = () => {
             label="User Name"
           >
             <Input
+              defaultValue={invitedData?.userName}
               ref={userNameRef}
               addonAfter={
                 <button onClick={() => handleCopy("username")} type="button">
@@ -727,6 +772,7 @@ const PlayerManagement = () => {
             />
           </Form.Item>
           <Form.Item
+            initialValue={invitedData?.password}
             rules={[
               {
                 message: "password is required",
@@ -738,6 +784,7 @@ const PlayerManagement = () => {
           >
             <Input
               ref={passwordRef}
+              defaultValue={invitedData?.password}
               addonAfter={
                 <button onClick={() => handleCopy("password")} type="button">
                   <CopyOutlined />
@@ -745,7 +792,14 @@ const PlayerManagement = () => {
               }
             />
           </Form.Item>
-          <Button htmlType="submit">Save Credential</Button>
+          <Button
+            disabled={invitedData?.userName || invitedData?.password}
+            htmlType="submit"
+          >
+            {invitedData?.userName || invitedData?.password
+              ? "Already invited"
+              : "Invite"}
+          </Button>
         </Form>
       </Modal>
     </div>

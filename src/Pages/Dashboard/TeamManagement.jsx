@@ -1,5 +1,18 @@
-import React, { useRef, useState } from "react";
-import { Table, Button, Input, Modal, Upload, Form, Select, Image } from "antd";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Table,
+  Button,
+  Input,
+  Modal,
+  Upload,
+  Form,
+  Select,
+  Image,
+  Popconfirm,
+  message,
+  Radio,
+} from "antd";
 import {
   PlusOutlined,
   EyeOutlined,
@@ -24,12 +37,14 @@ import {
 import { url } from "../../Utils/BaseUrl";
 import { useGetAllLeagueQuery } from "../../Redux/Apis/leagueApis";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 const TeamManagement = () => {
   const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
   const [isTipsDetailsModalVisible, setIsTipsDetailsModalVisible] =
     useState(false);
   const [isInviteModalVisible, setIsInviteModalVisible] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState(null);
+  const [selectItemId, setSelectItemId] = useState([]);
   const [form] = Form.useForm();
 
   const [profileImage, setProfileImage] = useState(null);
@@ -48,10 +63,11 @@ const TeamManagement = () => {
     isLoading: leagueLading,
     isFetching,
   } = useGetAllLeagueQuery({ limit: 9999999 });
-  const { data, error, isLoading } = useGetAllTeamQuery({
+  const { data, isLoading } = useGetAllTeamQuery({
     searchTerm,
     league,
     page,
+    limit: 250,
   });
   const [create, { isLoading: creating }] = useCreateTeamMutation();
   const [update, { isLoading: updating }] = useUpdateTeamMutation();
@@ -121,7 +137,17 @@ const TeamManagement = () => {
             <EditOutlined />
           </button>
           <button
-            onClick={() =>
+            onClick={
+              () => handleDelete(record?._id)
+              // deleteTeam(record?._id)
+            }
+            className="bg-red-500 border-none text-white text-xl p-2 py-1 rounded-md"
+          >
+            <DeleteOutlined />
+          </button>
+          {/* <Popconfirm
+            title="Are you sure you want to delete this team?"
+            onConfirm={() =>
               deleteTeam(record?._id)
                 .unwrap()
                 .then((res) => {
@@ -131,14 +157,51 @@ const TeamManagement = () => {
                   toast.error(err?.data?.message);
                 })
             }
-            className="bg-red-500 border-none text-white text-xl p-2 py-1 rounded-md"
+            okText="Yes"
+            cancelText="No"
           >
-            <DeleteOutlined />
-          </button>
+            <button className="bg-red-500 border-none text-white text-xl p-2 py-1 rounded-md">
+              <DeleteOutlined />
+            </button>
+          </Popconfirm> */}
         </div>
       ),
     },
   ];
+
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure you want to delete this team?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteTeam(id).unwrap();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+        message.success("Player deleted successfully");
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to delete player.",
+          icon: "error",
+        });
+        message.error("Failed to delete player");
+      }
+    } else {
+      message.info("Delete operation canceled");
+    }
+  };
 
   const handleAdd = () => {
     setSelectedTeam(null);
@@ -163,6 +226,8 @@ const TeamManagement = () => {
   };
 
   const handleInvite = (team) => {
+    console.log(team);
+
     setSelectedTeam(team);
     setIsInviteModalVisible(true);
   };
@@ -212,6 +277,7 @@ const TeamManagement = () => {
     }
   };
   const SubmitInvite = (value) => {
+    console.log(value); // aaaaaaaaaaaaaa
     invite({ id: selectedTeam?._id, data: value })
       .unwrap()
       .then((res) => {
@@ -251,7 +317,28 @@ const TeamManagement = () => {
         toast.error(err?.data?.message);
       });
   };
-  // console.log(test)
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      const selectedIds = selectedRows.map((row) => row._id);
+      setSelectItemId(selectedIds);
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.name === "Disabled User",
+      // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+  const tableData =
+    data?.data?.result?.map((item, i) => {
+      return {
+        key: i + 1,
+        ...item,
+      };
+    }) || [];
+
+  // all selected item id
+  // console.log(selectItemId);
+
   return (
     <div className="p-4 h-screen overflow-y-scroll bg-[var(--bg-gray-20)]">
       <div
@@ -290,7 +377,6 @@ const TeamManagement = () => {
       >
         Add
       </Button>
-
       <Table
         loading={
           isLoading ||
@@ -301,9 +387,13 @@ const TeamManagement = () => {
           inviting ||
           tipping
         }
-        dataSource={data?.data?.result}
+        rowSelection={{
+          type: "checkbox",
+          ...rowSelection,
+        }}
+        dataSource={tableData}
         columns={columns}
-        rowKey="id"
+        rowKey="key"
         pagination={{
           position: ["bottomCenter"],
           pageSize: data?.data?.meta?.limit,
@@ -334,7 +424,9 @@ const TeamManagement = () => {
           <Form.Item name="league" label="League" rules={[{ required: true }]}>
             <Select showSearch placeholder="Select league">
               {leagueData?.data?.result?.map((item) => (
-                <Select.Option value={item?._id}>{item?.name}</Select.Option>
+                <Select.Option key={item?._id} value={item?._id}>
+                  {item?.name}
+                </Select.Option>
               ))}
               {/* Add more options */}
             </Select>
