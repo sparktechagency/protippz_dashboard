@@ -36,7 +36,6 @@ const Sidebar = () => {
   const [upload] = useUploadCsvMutation();
   const [uploadProgress, setUploadProgress] = useState(0);
   const handleUpload = (file) => {
-    console.log(file);
     return false;
   };
   return (

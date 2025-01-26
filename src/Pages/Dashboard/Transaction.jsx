@@ -10,7 +10,6 @@ const Transaction = () => {
     const [page, setPage] = useState(1)
     const [searchTerm, setSearchTerm] = useState('')
     const { data: transitions, isLoading, isFetching } = useGetTransitionQuery({ searchTerm, page })
-    console.log(transitions)
     const columns = [
         // { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
         { title: 'Date', dataIndex: 'createdAt', key: 'createdAt', render: (createdAt) => `${createdAt?.split('T')?.[0]}` },

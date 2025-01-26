@@ -14,7 +14,6 @@ const ForgetPassword = () => {
     // handler
     const onSubmitLoginForm = value => {
         forgetPassword(value).unwrap().then((res) => {
-            console.log(res)
             if (res?.success) {
                 localStorage.setItem('email', JSON.stringify(value?.email))
                 toast.success(res.message || 'a verification code has been sent to Phone Number')

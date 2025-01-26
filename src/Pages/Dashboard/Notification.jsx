@@ -1,21 +1,20 @@
 import PageHeading from '../../Components/Shared/PageHeading'
 import Button from '../../Components/Shared/Button'
-import { MdDelete } from 'react-icons/md'
 import { useSocketContext } from '../../Context/SocketContext'
 import Loading from '../../Components/Shared/Loading'
-import { useGetNotificationsQuery, useReadAllNotificationsMutation, useReadSingleNotificationMutation } from '../../Redux/Apis/notificationsApis'
+// import { useGetNotificationsQuery, useReadAllNotificationsMutation, useReadSingleNotificationMutation } from '../../Redux/Apis/notificationsApis'
 import { useState } from 'react'
 import { useGetNotificationQuery } from '../../Redux/Apis/manageApis'
 
 
 const Notification = () => {
     const [limit, setLimit] = useState(50)
-    const { isLoadingNotifications, notifications, totalNotifications, setNotificationLimit, notificationLimit } = useSocketContext();
+    const { isLoadingNotifications, totalNotifications, setNotificationLimit, notificationLimit } = useSocketContext();
     const { data } = useGetNotificationQuery(limit)
     //rtk query
     // const [readSingleNotification] = useReadSingleNotificationMutation()
     // const [readAllNotifications] = useReadAllNotificationsMutation()
-    console.log(data)
+
     return (
         <div className='bg-[var(--bg-white-20)] p-4 rounded-md'>
             {

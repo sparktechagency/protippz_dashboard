@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Table,
   Button,
@@ -9,9 +8,7 @@ import {
   Form,
   Select,
   Image,
-  Popconfirm,
   message,
-  Radio,
   Spin,
 } from "antd";
 import {
@@ -80,7 +77,6 @@ const TeamManagement = () => {
   const [tip, { isLoading: tipping }] = useSendTipMutation();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const columns = [
-    // { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
     { title: "Team Name", dataIndex: "name", key: "name" },
     {
       title: "Team Logo",
@@ -141,33 +137,11 @@ const TeamManagement = () => {
             <EditOutlined />
           </button>
           <button
-            onClick={
-              () => handleDelete(record?._id)
-              // deleteTeam(record?._id)
-            }
+            onClick={() => handleDelete(record?._id)}
             className="bg-red-500 border-none text-white text-xl p-2 py-1 rounded-md"
           >
             <DeleteOutlined />
           </button>
-          {/* <Popconfirm
-            title="Are you sure you want to delete this team?"
-            onConfirm={() =>
-              deleteTeam(record?._id)
-                .unwrap()
-                .then((res) => {
-                  toast.success(res?.message);
-                })
-                .catch((err) => {
-                  toast.error(err?.data?.message);
-                })
-            }
-            okText="Yes"
-            cancelText="No"
-          >
-            <button className="bg-red-500 border-none text-white text-xl p-2 py-1 rounded-md">
-              <DeleteOutlined />
-            </button>
-          </Popconfirm> */}
         </div>
       ),
     },
@@ -219,11 +193,9 @@ const TeamManagement = () => {
     });
 
     if (result.isConfirmed) {
-      console.log(selectItemId);
       const deleteData = {
         ids: selectItemId,
       };
-      console.log(deleteData);
 
       try {
         await deleteSelect(deleteData).unwrap();
@@ -254,7 +226,6 @@ const TeamManagement = () => {
   };
 
   const handleEdit = (team) => {
-    console.log(team);
     setSelectedTeam(team);
     setIsAddEditModalVisible(true);
     form.setFieldsValue({
@@ -271,8 +242,6 @@ const TeamManagement = () => {
   };
 
   const handleInvite = (team) => {
-    console.log(team);
-
     setSelectedTeam(team);
     setIsInviteModalVisible(true);
   };
@@ -382,9 +351,6 @@ const TeamManagement = () => {
       };
     }) || [];
 
-  // all selected item id
-  // console.log(selectItemId);
-
   return (
     <div className="p-4 h-screen overflow-y-scroll bg-[var(--bg-gray-20)]">
       <div
@@ -443,7 +409,8 @@ const TeamManagement = () => {
           deleting ||
           updating ||
           inviting ||
-          tipping
+          tipping ||
+          leagueLading
         }
         rowSelection={{
           type: "checkbox",

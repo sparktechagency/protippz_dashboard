@@ -90,8 +90,7 @@ const IncomeOverView = () => {
         responsive: true,
         maintainAspectRatio: false,
     };
-    // chart end
-    //data
+
     const growthData = [
         {
             name: 'Yearly Growth',
@@ -106,8 +105,7 @@ const IncomeOverView = () => {
             total: `${income?.data?.dailyComparison}%`
         },
     ]
-    //handler
-    return (//showSearch onSearch={(e)=>console.log(e)}
+    return (
         <div className='w-full h-full bg-[var(--bg-white)] rounded-md p-4'>
             {
                 isLoading && <Loading />
