@@ -60,7 +60,7 @@ const PlayerManagement = () => {
 
   const userNameRef = useRef();
   const passwordRef = useRef();
-  const [invitedData, setInvitedData] = useState(null);;
+  const [invitedData, setInvitedData] = useState(null);
 
   const [tipAmount, setTipAmount] = useState(0);
 

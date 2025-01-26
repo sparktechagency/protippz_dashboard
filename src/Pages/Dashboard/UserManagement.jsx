@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Table, Input, Typography, Switch, Spin } from "antd";
+import { useState } from "react";
+import { Table, Input, Switch, Button } from "antd";
 import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons";
 import UserImageName from "../../Components/Shared/UserImageName";
 import { Link } from "react-router-dom";
@@ -8,6 +8,7 @@ import {
   useGetAllUserQuery,
 } from "../../Redux/Apis/usersApi";
 import toast from "react-hot-toast";
+import { BsFiletypeCsv } from "react-icons/bs";
 
 const UserManagement = () => {
   const [page, setPage] = useState(1);
@@ -16,7 +17,7 @@ const UserManagement = () => {
     data,
     isLoading: fetching,
     isFetching,
-  } = useGetAllUserQuery({ page, searchTerm });
+  } = useGetAllUserQuery({ page, searchTerm, limit: 50 });
   const [block, { isLoading }] = useBlockUserMutation();
   const handleStatusChange = (userId, status) => {
     block({ id: userId, data: { status } })
@@ -64,7 +65,7 @@ const UserManagement = () => {
       dataIndex: "address",
       key: "address",
       width: "20%",
-      render: (value) => `${value || 'N/A'}`,
+      render: (value) => `${value || "N/A"}`,
     },
     {
       title: "Total Tips",
@@ -128,7 +129,21 @@ const UserManagement = () => {
               }}
             />
           </Link>
-          <h4 className="text-lg font-semibold">User Management</h4>
+          <div className="flex items-center justify-center gap-3">
+            <h4 className="text-lg font-semibold">User Management</h4>
+            <Button
+              style={{
+                backgroundColor: "#053697",
+                color: "white",
+              }}
+              className="flex items-center justify-center gap-2"
+              onMouseEnter={(e) => (e.target.style.backgroundColor = "#053692")}
+              onMouseLeave={(e) => (e.target.style.backgroundColor = "#053697")}
+            >
+              <BsFiletypeCsv />
+              Export to CSV
+            </Button>
+          </div>
         </div>
         <Input
           placeholder="Search here..."
