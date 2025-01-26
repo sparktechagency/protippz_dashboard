@@ -1,7 +1,4 @@
 import { Suspense } from 'react'
-import { FaCircleUser, FaUserDoctor } from 'react-icons/fa6'
-import { GrMoney } from 'react-icons/gr'
-import { SlCalender } from 'react-icons/sl'
 import IncomeCard from '../../Components/Dashboard/IncomeCard'
 import IncomeOverView from '../../Components/Dashboard/IncomeOverView'
 import AppointmentsOverview from '../../Components/Dashboard/AppointmentsOverview'
