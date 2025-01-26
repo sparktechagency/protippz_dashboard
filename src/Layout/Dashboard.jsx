@@ -10,7 +10,7 @@ const Dashboard = () => {
             </div>
             <div className='w-[calc(100%-300px)] bg-[var(--color-gray-20)] h-screen'>
                 <Header />
-                <div className='w-full p-5 rounded-md h-[calc(100dvh-110px)] overflow-y-scroll'>
+                <div className='Oulet-scroll w-full p-5 rounded-md h-[calc(100dvh-110px)] overflow-y-scroll'>
                     <Outlet />
                 </div>
             </div>

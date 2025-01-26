@@ -12,6 +12,7 @@ import {
   Popconfirm,
   message,
   Radio,
+  Spin,
 } from "antd";
 import {
   PlusOutlined,
@@ -29,6 +30,7 @@ import { Link } from "react-router-dom";
 import {
   useCreateTeamMutation,
   useDeleteTeamMutation,
+  useDeleteTeamSelectedMutation,
   useGetAllTeamQuery,
   useInviteTeamMutation,
   useSendTipMutation,
@@ -72,9 +74,11 @@ const TeamManagement = () => {
   const [create, { isLoading: creating }] = useCreateTeamMutation();
   const [update, { isLoading: updating }] = useUpdateTeamMutation();
   const [deleteTeam, { isLoading: deleting }] = useDeleteTeamMutation();
+  const [deleteSelect, { isLoading: deletingSelect }] =
+    useDeleteTeamSelectedMutation();
   const [invite, { isLoading: inviting }] = useInviteTeamMutation();
   const [tip, { isLoading: tipping }] = useSendTipMutation();
-
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const columns = [
     // { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
     { title: "Team Name", dataIndex: "name", key: "name" },
@@ -202,6 +206,47 @@ const TeamManagement = () => {
       message.info("Delete operation canceled");
     }
   };
+  const handleDeleteMany = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure you want to delete this team?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      console.log(selectItemId);
+      const deleteData = {
+        ids: selectItemId,
+      };
+      console.log(deleteData);
+
+      try {
+        await deleteSelect(deleteData).unwrap();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+        message.success("Player deleted successfully");
+        setSelectItemId([]);
+        setSelectedRowKeys([]);
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: "Failed to delete player.",
+          icon: "error",
+        });
+        message.error("Failed to delete player");
+      }
+    } else {
+      message.info("Delete operation canceled");
+    }
+  };
 
   const handleAdd = () => {
     setSelectedTeam(null);
@@ -277,7 +322,6 @@ const TeamManagement = () => {
     }
   };
   const SubmitInvite = (value) => {
-    console.log(value); // aaaaaaaaaaaaaa
     invite({ id: selectedTeam?._id, data: value })
       .unwrap()
       .then((res) => {
@@ -318,7 +362,9 @@ const TeamManagement = () => {
       });
   };
   const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
+    selectedRowKeys,
+    onChange: (newSelectedRowKeys, selectedRows) => {
+      setSelectedRowKeys(newSelectedRowKeys);
       const selectedIds = selectedRows.map((row) => row._id);
       setSelectItemId(selectedIds);
     },
@@ -369,14 +415,26 @@ const TeamManagement = () => {
           className="mb-6 w-64"
         />
       </div>
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={handleAdd}
-        className="bg-green-500 mb-3"
-      >
-        Add
-      </Button>
+      <div className="flex items-center justify-between w-full">
+        <Button
+          disabled={selectItemId?.length === 0}
+          icon={deletingSelect ? "" : <PlusOutlined className="rotate-45" />}
+          onClick={handleDeleteMany}
+          className={`bg-red-500 mb-3 ${
+            selectItemId?.length === 0 ? "cursor-not-allowed" : ""
+          }`}
+        >
+          {deletingSelect ? <Spin size="small" /> : "Delete Selected"}
+        </Button>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={handleAdd}
+          className="bg-green-500 mb-3"
+        >
+          Add
+        </Button>
+      </div>
       <Table
         loading={
           isLoading ||

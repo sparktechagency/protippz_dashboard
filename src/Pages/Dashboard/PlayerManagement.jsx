@@ -191,7 +191,7 @@
 // };
 
 // export default PlayerManagement;
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Table,
   Button,
@@ -202,7 +202,7 @@ import {
   Select,
   message,
   Image,
-  Popconfirm,
+  Spin,
 } from "antd";
 import {
   PlusOutlined,
@@ -224,6 +224,7 @@ import {
   useDeletePlayerMutation,
   useInvitePlayerMutation,
   useSendPlayerTipMutation,
+  useDeletePlayerSelectedMutation,
 } from "../../Redux/Apis/playerApis";
 import { useGetAllLeagueQuery } from "../../Redux/Apis/leagueApis";
 import { useGetAllTeamQuery } from "../../Redux/Apis/teamApis";
@@ -233,6 +234,8 @@ import Swal from "sweetalert2";
 
 const PlayerManagement = () => {
   const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
+  const [deleteSelect, { isLoading: deletingSelect }] =
+    useDeletePlayerSelectedMutation();
   const [isTipsDetailsModalVisible, setIsTipsDetailsModalVisible] =
     useState(false);
   const [isInviteModalVisible, setIsInviteModalVisible] = useState(false);
@@ -244,20 +247,33 @@ const PlayerManagement = () => {
 
   const [profileImage, setProfileImage] = useState(null);
   const [BgImage, setBgImage] = useState(null);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   const [league, setLeague] = useState("");
 
   const userNameRef = useRef();
   const passwordRef = useRef();
+  const [invitedData, setInvitedData] = useState(null);
+  console.log("invitedData", invitedData);
 
   const [tipAmount, setTipAmount] = useState(0);
+
+  useEffect(() => {
+    if (invitedData) {
+      form.setFieldsValue({
+        username: invitedData.userName,
+        password: invitedData.invitedPassword,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [invitedData, form]);
 
   const {
     data: players,
     isFetching,
     isLoading,
-    isError,
-  } = useGetAllPlayerQuery({ searchTerm, page });
+  } = useGetAllPlayerQuery({ searchTerm, page, limit: 250 });
   const { data: leagueData, isLoading: leagueLading } = useGetAllLeagueQuery({
     limit: 9999999,
   });
@@ -265,13 +281,13 @@ const PlayerManagement = () => {
     data: teams,
     isLoading: teamLoading,
     isFetching: teamFetching,
-    error,
   } = useGetAllTeamQuery({ limit: 9999999, league });
   const [createPlayer, { isLoading: creating }] = useCreatePlayerMutation();
   const [updatePlayer, { isLoading: updating }] = useUpdatePlayerMutation();
   const [deletePlayer, { isLoading: deleting }] = useDeletePlayerMutation();
   const [invitePlayer, { isLoading: inviting }] = useInvitePlayerMutation();
   const [sendTip, { isLoading: tipping }] = useSendPlayerTipMutation();
+  const [selectItemId, setSelectItemId] = useState([]);
 
   const columns = [
     // { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
@@ -323,7 +339,11 @@ const PlayerManagement = () => {
       render: (_, record) => (
         <button
           onClick={() => handleInvite(record)}
-          className="bg-blue-500 text-white text-xl p-2 py-1 rounded-md"
+          className={`${
+            record?.invitedPassword || record?.userName
+              ? "bg-red-500"
+              : "bg-blue-500"
+          } text-white text-xl p-2 py-1 rounded-md`}
         >
           <MailOutlined />
         </button>
@@ -382,17 +402,53 @@ const PlayerManagement = () => {
     setSelectedPlayer(player);
     setIsTipsDetailsModalVisible(true);
   };
-  const [invitedData, setInvitedData] = useState(null);
 
   const handleInvite = (player) => {
-    console.log(player);
     const data = {
-      userName: player.username,
-      password: player.invitedPassword,
+      userName: player.username || "",
+      invitedPassword: player.invitedPassword || "",
     };
     setInvitedData(data);
-    setSelectedPlayer(player);
     setIsInviteModalVisible(true);
+  };
+  const handleDeleteManyPlayer = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure you want to delete this team?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      const deleteData = {
+        ids: selectItemId,
+      };
+
+      try {
+        await deleteSelect(deleteData).unwrap();
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+        message.success("Player deleted successfully");
+        setSelectItemId([]);
+        setSelectedRowKeys([]);
+      } catch (error) {
+        Swal.fire({
+          title: "Error!",
+          text: `Failed to delete player.`,
+          icon: "error",
+        });
+        message.error("Failed to delete player", error);
+      }
+    } else {
+      message.info("Delete operation canceled");
+    }
   };
 
   const handleDelete = async (id) => {
@@ -514,6 +570,20 @@ const PlayerManagement = () => {
     }
   };
 
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: (newSelectedRowKeys, selectedRows) => {
+      setSelectedRowKeys(newSelectedRowKeys);
+      const selectedIds = selectedRows.map((row) => row._id);
+      setSelectItemId(selectedIds);
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.name === "Disabled User",
+      // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+
   return (
     <div className="p-4 h-screen overflow-y-scroll bg-[var(--bg-gray-20)]">
       <div className="flex justify-between items-center mb-4">
@@ -537,18 +607,37 @@ const PlayerManagement = () => {
           className="w-64"
         />
       </div>
-      <Button
-        type="primary"
-        icon={<PlusOutlined />}
-        onClick={handleAdd}
-        className="bg-green-500 mb-3"
-      >
-        Add
-      </Button>
+      <div className="flex items-center justify-end w-full">
+        <div className="flex items-center justify-between w-full">
+          <Button
+            disabled={selectItemId?.length === 0}
+            icon={deletingSelect ? "" : <PlusOutlined className="rotate-45" />}
+            onClick={handleDeleteManyPlayer}
+            className={`bg-red-500 mb-3 ${
+              selectItemId?.length === 0 ? "cursor-not-allowed" : ""
+            }`}
+          >
+            {deletingSelect ? <Spin size="small" /> : "Delete Selected"}
+          </Button>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleAdd}
+            className="bg-green-500 mb-3"
+          >
+            Add
+          </Button>
+        </div>
+      </div>
+
       <Table
         dataSource={players?.data?.result || []}
         columns={columns}
-        rowKey="id"
+        rowSelection={{
+          type: "checkbox",
+          ...rowSelection,
+        }}
+        rowKey="_id"
         pagination={{
           position: ["bottomCenter"],
           pageSize: players?.data?.meta?.limit,
@@ -737,7 +826,11 @@ const PlayerManagement = () => {
       {/* Invite Modal */}
       <Modal
         open={isInviteModalVisible}
-        onCancel={() => setIsInviteModalVisible(false)}
+        onCancel={() => {
+          setIsInviteModalVisible(false);
+          setInvitedData(null); // Clear invited data
+          form.resetFields(); // Clear form fields
+        }}
         footer={null}
         centered
       >
@@ -751,19 +844,17 @@ const PlayerManagement = () => {
           className="space-y-4"
         >
           <Form.Item
-            initialValue={invitedData?.userName}
+            name="username"
+            label="User Name"
             rules={[
               {
-                message: "username is required",
+                message: "Username is required",
                 required: true,
               },
             ]}
-            name={`username`}
-            label="User Name"
           >
             <Input
-              defaultValue={invitedData?.userName}
-              ref={userNameRef}
+              ref={(input) => input && input.select()}
               addonAfter={
                 <button onClick={() => handleCopy("username")} type="button">
                   <CopyOutlined />
@@ -772,31 +863,29 @@ const PlayerManagement = () => {
             />
           </Form.Item>
           <Form.Item
-            initialValue={invitedData?.password}
+            name="password"
+            label="Password"
             rules={[
               {
-                message: "password is required",
+                message: "Password is required",
                 required: true,
               },
             ]}
-            name={`password`}
-            label="Password"
           >
             <Input
-              ref={passwordRef}
-              defaultValue={invitedData?.password}
+              ref={(input) => input && input.select()}
               addonAfter={
-                <button onClick={() => handleCopy("password")} type="button">
+                <button onClick={() => handleCopy("username")} type="button">
                   <CopyOutlined />
                 </button>
               }
             />
           </Form.Item>
           <Button
-            disabled={invitedData?.userName || invitedData?.password}
+            disabled={!!invitedData?.userName || !!invitedData?.invitedPassword}
             htmlType="submit"
           >
-            {invitedData?.userName || invitedData?.password
+            {invitedData?.userName || invitedData?.invitedPassword
               ? "Already invited"
               : "Invite"}
           </Button>
