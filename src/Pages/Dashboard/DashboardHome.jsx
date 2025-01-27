@@ -62,7 +62,7 @@ const DashboardHome = () => {
                     </Link>
                 </div>
                 <Suspense fallback={''}>
-                    <RedeemRequest />
+                <RedeemRequest />
                 </Suspense>
             </div>
         </div>

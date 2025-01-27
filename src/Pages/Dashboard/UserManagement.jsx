@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Table, Input, Switch, Button } from "antd";
 import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons";
+import { CSVLink } from "react-csv"; // Import React CSV
 import UserImageName from "../../Components/Shared/UserImageName";
 import { Link } from "react-router-dom";
 import {
@@ -17,8 +18,13 @@ const UserManagement = () => {
     data,
     isLoading: fetching,
     isFetching,
-  } = useGetAllUserQuery({ page, searchTerm, limit: 50 });
+  } = useGetAllUserQuery({
+    page,
+    searchTerm,
+    limit: 50,
+  });
   const [block, { isLoading }] = useBlockUserMutation();
+
   const handleStatusChange = (userId, status) => {
     block({ id: userId, data: { status } })
       .unwrap()
@@ -29,6 +35,32 @@ const UserManagement = () => {
         toast.error(err?.data?.message);
       });
   };
+
+  // Prepare data for CSV
+  const headers = [
+    { label: "Full Name", key: "name" },
+    { label: "Email", key: "email" },
+    { label: "Phone Number", key: "phone" },
+    { label: "User Name", key: "username" },
+    { label: "Address", key: "address" },
+    { label: "Total Tips", key: "totalTipSent" },
+  ];
+
+  const { data: csv } = useGetAllUserQuery({
+    page,
+    searchTerm,
+    limit: 999999999999999,
+  });
+
+  const csvData =
+    csv?.data?.result?.map((user) => ({
+      name: user.name || "N/A",
+      email: user.email || "N/A",
+      phone: user.phone || "N/A",
+      username: user.username || "N/A",
+      address: user.address || "N/A",
+      totalTipSent: user.totalTipSent || 0,
+    })) || [];
 
   const columns = [
     {
@@ -59,7 +91,6 @@ const UserManagement = () => {
       key: "username",
       width: "15%",
     },
-
     {
       title: "Address",
       dataIndex: "address",
@@ -81,11 +112,11 @@ const UserManagement = () => {
       render: (_, record) => {
         return (
           <Switch
-            checked={record?.user?.status == "in-progress"}
+            checked={record?.user?.status === "in-progress"}
             onChange={(checked) =>
               handleStatusChange(
                 record.user?._id,
-                record?.user?.status == "in-progress"
+                record?.user?.status === "in-progress"
                   ? "blocked"
                   : "in-progress"
               )
@@ -131,18 +162,28 @@ const UserManagement = () => {
           </Link>
           <div className="flex items-center justify-center gap-3">
             <h4 className="text-lg font-semibold">User Management</h4>
-            <Button
-              style={{
-                backgroundColor: "#053697",
-                color: "white",
-              }}
+            <CSVLink
+              data={csvData}
+              headers={headers}
+              filename={`user-management-${new Date().toISOString()}.csv`}
               className="flex items-center justify-center gap-2"
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#053692")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#053697")}
             >
-              <BsFiletypeCsv />
-              Export to CSV
-            </Button>
+              <Button
+                style={{
+                  backgroundColor: "#053697",
+                  color: "white",
+                }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "#053692")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.backgroundColor = "#053697")
+                }
+              >
+                <BsFiletypeCsv />
+                Export to CSV
+              </Button>
+            </CSVLink>
           </div>
         </div>
         <Input
