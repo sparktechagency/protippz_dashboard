@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Table,
   Button,
@@ -76,6 +76,17 @@ const TeamManagement = () => {
   const [invite, { isLoading: inviting }] = useInviteTeamMutation();
   const [tip, { isLoading: tipping }] = useSendTipMutation();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [invitedData, setInvitedData] = useState(null);
+  useEffect(() => {
+    if (invitedData) {
+      form.setFieldsValue({
+        username: invitedData?.userName,
+        password: invitedData?.invitedPassword,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [invitedData, form]);
   const columns = [
     { title: "Team Name", dataIndex: "name", key: "name" },
     {
@@ -119,7 +130,11 @@ const TeamManagement = () => {
       render: (_, record) => (
         <button
           onClick={() => handleInvite(record)}
-          className="bg-blue-500 text-white text-xl p-2 py-1 rounded-md"
+          className={`${
+            record?.invitedPassword || record?.userName
+              ? "bg-red-500"
+              : "bg-blue-500"
+          } text-white text-xl p-2 py-1 rounded-md`}
         >
           <MailOutlined />
         </button>
@@ -240,11 +255,26 @@ const TeamManagement = () => {
     setSelectedTeam(team);
     setIsTipsDetailsModalVisible(true);
   };
-
+  // const [selectedPlayer, setSelectedPlayer] = useState(null);
   const handleInvite = (team) => {
     setSelectedTeam(team);
+    const data = {
+      userName: team.username || "",
+      invitedPassword: team.invitedPassword || "",
+    };
+    setInvitedData(data);
     setIsInviteModalVisible(true);
   };
+
+  // const handleInvite = (player) => {
+  //   setSelectedPlayer(player?.username);
+  //   const data = {
+  //     userName: player.username || "",
+  //     invitedPassword: player.invitedPassword || "",
+  //   };
+  //   setInvitedData(data);
+  //   setIsInviteModalVisible(true);
+  // };
 
   const handleFinish = (values) => {
     const data = {
@@ -627,7 +657,14 @@ const TeamManagement = () => {
               }
             />
           </Form.Item>
-          <Button htmlType="submit">Save Credential</Button>
+          <Button
+            disabled={!!invitedData?.userName || !!invitedData?.invitedPassword}
+            htmlType="submit"
+          >
+            {invitedData?.userName || invitedData?.invitedPassword
+              ? "Already invited"
+              : "Invite"}
+          </Button>
         </Form>
       </Modal>
     </div>

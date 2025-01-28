@@ -67,8 +67,8 @@ const PlayerManagement = () => {
   useEffect(() => {
     if (invitedData) {
       form.setFieldsValue({
-        username: invitedData.userName,
-        password: invitedData.invitedPassword,
+        username: invitedData?.userName,
+        password: invitedData?.invitedPassword,
       });
     } else {
       form.resetFields();
@@ -94,6 +94,7 @@ const PlayerManagement = () => {
   const [invitePlayer, { isLoading: inviting }] = useInvitePlayerMutation();
   const [sendTip, { isLoading: tipping }] = useSendPlayerTipMutation();
   const [selectItemId, setSelectItemId] = useState([]);
+  console.log(selectedPlayer);
 
   const columns = [
     // { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
@@ -210,6 +211,7 @@ const PlayerManagement = () => {
   };
 
   const handleInvite = (player) => {
+    setSelectedPlayer(player?._id);
     const data = {
       userName: player.username || "",
       invitedPassword: player.invitedPassword || "",
@@ -352,7 +354,7 @@ const PlayerManagement = () => {
   };
 
   const handleInviteSubmit = async (value) => {
-    invitePlayer({ id: selectedPlayer?._id, data: value })
+    invitePlayer({ id: selectedPlayer, data: value })
       .unwrap()
       .then((res) => {
         toast.success(res?.message);
@@ -364,15 +366,27 @@ const PlayerManagement = () => {
       });
   };
 
+  // const handleCopy = (type) => {
+  //   if (type === "password" && passwordRef?.current) {
+  //     passwordRef.current.select();
+  //     document.execCommand("copy");
+  //     toast.success("password copied successfully");
+  //   } else if (userNameRef?.current) {
+  //     userNameRef.current.select();
+  //     document.execCommand("copy");
+  //     toast.success("username copied successfully");
+  //   }
+  // };
+
   const handleCopy = (type) => {
-    if (type == "password" && passwordRef?.current) {
+    if (type === "password" && passwordRef.current) {
       passwordRef.current.select();
       document.execCommand("copy");
-      toast.success("password copied successfully");
-    } else if (userNameRef?.current) {
+      toast.success("Password copied successfully!");
+    } else if (type === "username" && userNameRef.current) {
       userNameRef.current.select();
       document.execCommand("copy");
-      toast.success("username copied successfully");
+      toast.success("Username copied successfully!");
     }
   };
 
@@ -661,7 +675,8 @@ const PlayerManagement = () => {
             ]}
           >
             <Input
-              ref={(input) => input && input.select()}
+              // ref={(input) => input && input.select()}
+              ref={userNameRef}
               addonAfter={
                 <button onClick={() => handleCopy("username")} type="button">
                   <CopyOutlined />
@@ -680,9 +695,10 @@ const PlayerManagement = () => {
             ]}
           >
             <Input
-              ref={(input) => input && input.select()}
+              // ref={(input) => input && input.select()}
+              ref={passwordRef}
               addonAfter={
-                <button onClick={() => handleCopy("username")} type="button">
+                <button onClick={() => handleCopy("password")} type="button">
                   <CopyOutlined />
                 </button>
               }
