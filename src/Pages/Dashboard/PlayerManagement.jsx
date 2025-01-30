@@ -38,6 +38,8 @@ import { useGetAllTeamQuery } from "../../Redux/Apis/teamApis";
 import { url } from "../../Utils/BaseUrl";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import { CSVLink } from "react-csv";
+import { BsFiletypeCsv } from "react-icons/bs";
 
 const PlayerManagement = () => {
   const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
@@ -51,7 +53,7 @@ const PlayerManagement = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-
+  const [limit, setLimit] = useState(250);
   const [profileImage, setProfileImage] = useState(null);
   const [BgImage, setBgImage] = useState(null);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -79,7 +81,7 @@ const PlayerManagement = () => {
     data: players,
     isFetching,
     isLoading,
-  } = useGetAllPlayerQuery({ searchTerm, page, limit: 250 });
+  } = useGetAllPlayerQuery({ searchTerm, page, limit });
   const { data: leagueData, isLoading: leagueLading } = useGetAllLeagueQuery({
     limit: 9999999,
   });
@@ -94,10 +96,40 @@ const PlayerManagement = () => {
   const [invitePlayer, { isLoading: inviting }] = useInvitePlayerMutation();
   const [sendTip, { isLoading: tipping }] = useSendPlayerTipMutation();
   const [selectItemId, setSelectItemId] = useState([]);
-  console.log(selectedPlayer);
+
+  const [csvReady, setCsvReady] = useState(false);
+
+  const { data: csvPlayer, isLoading: csvDataLoading } = useGetAllPlayerQuery(
+    { limit: 999999999999999 },
+    { skip: !csvReady }
+  );
+
+  const exportDataCsv = () => {
+    if (!csvPlayer?.data?.result) return [];
+    return csvPlayer?.data.result.map((player) => ({
+      _id: player?._id || "N/A",
+      name: player?.name || "N/A",
+      league_id: player?.league?._id || "N/A",
+      league_name: player?.league?.name || "N/A",
+      sport: player?.league?.sport || "N/A",
+      team_id: player?.team?._id || "N/A",
+      team_name: player?.team?.name || "N/A",
+      position: player?.position || "N/A",
+      player_image: player?.player_image || "N/A",
+      player_bg_image: player?.player_bg_image || "N/A",
+      totalTips: player?.totalTips || 0,
+      paidAmount: player?.paidAmount || 0,
+      dueAmount: player?.dueAmount || 0,
+      isStripeConnected: player?.isStripeConnected || false,
+      createdAt: player?.createdAt || "N/A",
+      updatedAt: player?.updatedAt || "N/A",
+      __v: player?.__v || 0,
+      isBookmark: player?.isBookmark || false,
+    }));
+  };
+
 
   const columns = [
-    // { title: 'SL no.', dataIndex: 'id', key: 'id', render: (text) => `#${text}` },
     { title: "Player Name", dataIndex: "name", key: "name" },
     {
       title: "League",
@@ -419,6 +451,96 @@ const PlayerManagement = () => {
             />
           </Link>
           <h4 className="text-lg font-semibold">Player Management</h4>
+          <Button
+            disabled={csvDataLoading}
+            className="ml-4 bg-[#2FC191] text-white"
+            onClick={() => setCsvReady(true)}
+          >
+            {csvDataLoading ? "Processing your Data..." : "Download CSV"}
+          </Button>
+          <div>
+            {csvPlayer?.data && (
+              <CSVLink
+                data={exportDataCsv()}
+                headers={[
+                  { label: "ID", key: "_id" },
+                  { label: "Name", key: "name" },
+                  { label: "League ID", key: "league_id" },
+                  { label: "League Name", key: "league_name" },
+                  { label: "Sport", key: "sport" },
+                  { label: "Team ID", key: "team_id" },
+                  { label: "Team Name", key: "team_name" },
+                  { label: "Position", key: "position" },
+                  { label: "Player Image", key: "player_image" },
+                  { label: "Player BG Image", key: "player_bg_image" },
+                  { label: "Total Tips", key: "totalTips" },
+                  { label: "Paid Amount", key: "paidAmount" },
+                  { label: "Due Amount", key: "dueAmount" },
+                  { label: "Is Stripe Connected", key: "isStripeConnected" },
+                  { label: "Created At", key: "createdAt" },
+                  { label: "Updated At", key: "updatedAt" },
+                  { label: "Version", key: "__v" },
+                  { label: "Bookmark", key: "isBookmark" },
+                ]}
+                filename={`user-management-${new Date().toISOString()}.csv`}
+                className="flex items-center ml-2 justify-center gap-2"
+                // onClick={() => setCsvReady(true)} // Set csvReady to true only when clicked
+              >
+                <Button
+                  style={{
+                    backgroundColor: "#053697",
+                    color: "white",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "#053692")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.backgroundColor = "#053697")
+                  }
+                >
+                  <BsFiletypeCsv />
+                  Export to CSV
+                </Button>
+              </CSVLink>
+            )}
+          </div>
+          {/* <CSVLink
+            data={csvData}
+            headers={[
+              { label: "ID", key: "_id" },
+              { label: "Name", key: "name" },
+              { label: "League ID", key: "league_id" },
+              { label: "League Name", key: "league_name" },
+              { label: "Sport", key: "sport" },
+              { label: "Team ID", key: "team_id" },
+              { label: "Team Name", key: "team_name" },
+              { label: "Position", key: "position" },
+              { label: "Player Image", key: "player_image" },
+              { label: "Player BG Image", key: "player_bg_image" },
+              { label: "Total Tips", key: "totalTips" },
+              { label: "Paid Amount", key: "paidAmount" },
+              { label: "Due Amount", key: "dueAmount" },
+              { label: "Is Stripe Connected", key: "isStripeConnected" },
+              { label: "Created At", key: "createdAt" },
+              { label: "Updated At", key: "updatedAt" },
+              { label: "Version", key: "__v" },
+              { label: "Bookmark", key: "isBookmark" },
+            ]}
+            filename={`user-management-${new Date().toISOString()}.csv`}
+            className="flex items-center ml-2 justify-center gap-2"
+          >
+            <Button
+              style={{
+                backgroundColor: "#053697",
+                color: "white",
+              }}
+              onMouseEnter={(e) => (e.target.style.backgroundColor = "#053692")}
+              onMouseLeave={(e) => (e.target.style.backgroundColor = "#053697")}
+            >
+              <BsFiletypeCsv />
+              Export to CSV
+            </Button>
+          </CSVLink> */}
         </div>
         <Input
           onChange={(e) => setSearchTerm(e.target.value)}

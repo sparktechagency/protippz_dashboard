@@ -37,6 +37,8 @@ import { url } from "../../Utils/BaseUrl";
 import { useGetAllLeagueQuery } from "../../Redux/Apis/leagueApis";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import { CSVLink } from "react-csv";
+import { BsFiletypeCsv } from "react-icons/bs";
 const TeamManagement = () => {
   const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
   const [isTipsDetailsModalVisible, setIsTipsDetailsModalVisible] =
@@ -68,6 +70,38 @@ const TeamManagement = () => {
     page,
     limit: 250,
   });
+  //
+
+  const [csvReady, setCsvReady] = useState(false);
+
+  const { data: csvTeam, isLoading: csvDataLoadings } = useGetAllTeamQuery(
+    { limit: 999999999999999 },
+    { skip: !csvReady }
+  );
+
+  const exportDataCsv = () => {
+    if (!csvTeam?.data?.result) return [];
+    return csvTeam?.data.result.map((team) => ({
+      name: team?.name || "N/A",
+      sport: team?.league?.sport || "N/A",
+      team_logo: team?.team_logo || "N/A",
+      league_name: team?.league?.name || "N/A",
+      bgImage: team?.team_bg_image || "N/A",
+      totalTips: team?.totalTips || 0,
+      paidAmount: team?.paidAmount || 0,
+      dueAmount: team?.dueAmount || 0,
+      isStripeConnected: team?.isStripeConnected ? "Yes" : "No",
+      createdAt: team?.createdAt || "N/A",
+      updatedAt: team?.updatedAt || "N/A",
+      username: team?.username || "N/A",
+      isBookmark: team?.isBookmark ? "Yes" : "No",
+    }));
+  };
+
+  //
+  // const { data: csv, isLoading: csvDataLoading } = useGetAllTeamQuery({
+  //   limit: 999999999999999,
+  // });
   const [create, { isLoading: creating }] = useCreateTeamMutation();
   const [update, { isLoading: updating }] = useUpdateTeamMutation();
   const [deleteTeam, { isLoading: deleting }] = useDeleteTeamMutation();
@@ -77,6 +111,7 @@ const TeamManagement = () => {
   const [tip, { isLoading: tipping }] = useSendTipMutation();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [invitedData, setInvitedData] = useState(null);
+
   useEffect(() => {
     if (invitedData) {
       form.setFieldsValue({
@@ -161,6 +196,23 @@ const TeamManagement = () => {
       ),
     },
   ];
+
+  // const headers = [
+  //   { label: "Team Name", key: "name" },
+  //   { label: "Team Logo", key: "team_logo" },
+  //   { label: "League", key: "league_name" },
+  //   { label: "Sport", key: "sport" },
+  //   { label: "Background Image", key: "bgImage" },
+  // ];
+
+  // const csvData =
+  //   csv?.data?.result?.map((user) => ({
+  //     name: user?.name || "N/A",
+  //     sport: user?.league?.sport || "N/A",
+  //     team_logo: user?.team_logo || "N/A",
+  //     league_name: user?.league?.name || "N/A",
+  //     bgImage: user?.team_bg_image || "N/A",
+  //   })) || [];
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
@@ -403,6 +455,78 @@ const TeamManagement = () => {
             />
           </Link>
           <h4 className="text-lg font-semibold">Team Management</h4>
+          {/* {!csvDataLoading && (
+            <CSVLink
+              data={csvData}
+              headers={headers}
+              filename={`user-management-${new Date().toISOString()}.csv`}
+              className="flex items-center ml-2 justify-center gap-2"
+            >
+              <Button
+                style={{
+                  backgroundColor: "#053697",
+                  color: "white",
+                }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "#053692")
+                }
+                onMouseLeave={(e) =>
+                  (e.target.style.backgroundColor = "#053697")
+                }
+              >
+                <BsFiletypeCsv />
+                Export to CSV
+              </Button>
+            </CSVLink>
+          )} */}
+          <Button
+            disabled={csvDataLoadings}
+            className="ml-4 bg-[#2FC191] text-white"
+            onClick={() => setCsvReady(true)}
+          >
+            {csvDataLoadings ? "Processing your Data..." : "Download CSV"}
+          </Button>
+          <div>
+            {csvTeam?.data && (
+              <CSVLink
+                data={exportDataCsv()}
+                headers={[
+                  { label: "Team Name", key: "name" },
+                  { label: "Team Logo", key: "team_logo" },
+                  { label: "League", key: "league_name" },
+                  { label: "Sport", key: "sport" },
+                  { label: "Background Image", key: "bgImage" },
+                  { label: "Total Tips", key: "totalTips" },
+                  { label: "Paid Amount", key: "paidAmount" },
+                  { label: "Due Amount", key: "dueAmount" },
+                  { label: "Stripe Connected", key: "isStripeConnected" },
+                  { label: "Created At", key: "createdAt" },
+                  { label: "Updated At", key: "updatedAt" },
+                  { label: "Username", key: "username" },
+                  { label: "Bookmarked", key: "isBookmark" },
+                ]}
+                filename={`user-management-${new Date().toISOString()}.csv`}
+                className="flex items-center ml-2 justify-center gap-2"
+                // onClick={() => setCsvReady(true)} // Set csvReady to true only when clicked
+              >
+                <Button
+                  style={{
+                    backgroundColor: "#053697",
+                    color: "white",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.target.style.backgroundColor = "#053692")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.target.style.backgroundColor = "#053697")
+                  }
+                >
+                  <BsFiletypeCsv />
+                  Export to CSV
+                </Button>
+              </CSVLink>
+            )}
+          </div>
         </div>
         <Input
           onChange={(e) => setSearchTerm(e.target.value)}

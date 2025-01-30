@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Table, Input, Switch, Button } from "antd";
 import { ArrowLeftOutlined, SearchOutlined } from "@ant-design/icons";
-import { CSVLink } from "react-csv"; // Import React CSV
+import { CSVLink } from "react-csv";
 import UserImageName from "../../Components/Shared/UserImageName";
 import { Link } from "react-router-dom";
 import {
@@ -36,31 +36,30 @@ const UserManagement = () => {
       });
   };
 
-  // Prepare data for CSV
-  const headers = [
-    { label: "Full Name", key: "name" },
-    { label: "Email", key: "email" },
-    { label: "Phone Number", key: "phone" },
-    { label: "User Name", key: "username" },
-    { label: "Address", key: "address" },
-    { label: "Total Tips", key: "totalTipSent" },
-  ];
+  const [csvReady, setCsvReady] = useState(false);
+  const { data: csvUser, isLoading: csvLeagueDataLoading } = useGetAllUserQuery(
+    { limit: 999999999999999 },
+    { skip: !csvReady }
+  );
 
-  const { data: csv } = useGetAllUserQuery({
-    page,
-    searchTerm,
-    limit: 999999999999999,
-  });
-
-  const csvData =
-    csv?.data?.result?.map((user) => ({
-      name: user.name || "N/A",
-      email: user.email || "N/A",
-      phone: user.phone || "N/A",
-      username: user.username || "N/A",
-      address: user.address || "N/A",
-      totalTipSent: user.totalTipSent || 0,
-    })) || [];
+  const exportDataCsv = () => {
+    if (!csvUser?.data?.result) return [];
+    return (
+      csvUser?.data?.result?.map((user) => ({
+        user_id: user?.user?._id || "N/A",
+        user_status: user?.user?.status || "N/A",
+        name: user?.name || "N/A",
+        username: user?.username || "N/A",
+        email: user?.email || "N/A",
+        profile_image: user?.profile_image || "N/A",
+        totalAmount: user?.totalAmount || 0,
+        totalPoint: user?.totalPoint || 0,
+        totalTipSent: user?.totalTipSent || 0,
+        createdAt: user?.createdAt || "N/A",
+        updatedAt: user?.updatedAt || "N/A",
+      })) || []
+    );
+  };
 
   const columns = [
     {
@@ -162,28 +161,53 @@ const UserManagement = () => {
           </Link>
           <div className="flex items-center justify-center gap-3">
             <h4 className="text-lg font-semibold">User Management</h4>
-            <CSVLink
-              data={csvData}
-              headers={headers}
-              filename={`user-management-${new Date().toISOString()}.csv`}
-              className="flex items-center justify-center gap-2"
+            <Button
+              disabled={csvLeagueDataLoading}
+              className="ml-4 bg-[#2FC191] text-white"
+              onClick={() => setCsvReady(true)}
             >
-              <Button
-                style={{
-                  backgroundColor: "#053697",
-                  color: "white",
-                }}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = "#053692")
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = "#053697")
-                }
-              >
-                <BsFiletypeCsv />
-                Export to CSV
-              </Button>
-            </CSVLink>
+              {csvLeagueDataLoading
+                ? "Processing your Data..."
+                : "Download CSV"}
+            </Button>
+            <div>
+              {csvUser?.data && (
+                <CSVLink
+                  data={exportDataCsv()}
+                  headers={[
+                    { label: "User ID", key: "user_id" },
+                    { label: "User Status", key: "user_status" },
+                    { label: "Name", key: "name" },
+                    { label: "Username", key: "username" },
+                    { label: "Email", key: "email" },
+                    { label: "Profile Image", key: "profile_image" },
+                    { label: "Total Amount", key: "totalAmount" },
+                    { label: "Total Points", key: "totalPoint" },
+                    { label: "Total Tips Sent", key: "totalTipSent" },
+                    { label: "Created At", key: "createdAt" },
+                    { label: "Updated At", key: "updatedAt" },
+                  ]}
+                  filename={`user-management-${new Date().toISOString()}.csv`}
+                  className="flex items-center ml-2 justify-center gap-2"
+                >
+                  <Button
+                    style={{
+                      backgroundColor: "#053697",
+                      color: "white",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.target.style.backgroundColor = "#053692")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.target.style.backgroundColor = "#053697")
+                    }
+                  >
+                    <BsFiletypeCsv />
+                    Export to CSV
+                  </Button>
+                </CSVLink>
+              )}
+            </div>
           </div>
         </div>
         <Input
