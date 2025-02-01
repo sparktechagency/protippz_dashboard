@@ -65,6 +65,9 @@ body {
     @apply flex justify-end items-center;
   }
 
+  .grid-5 {
+    @apply md:grid md:grid-cols-2 flex flex-col justify-start items-start md:items-center lg:grid-cols-3 xl:grid-cols-5 gap-4;
+  }
   .grid-4 {
     @apply md:grid md:grid-cols-2 flex flex-col justify-start items-start md:items-center lg:grid-cols-3 xl:grid-cols-4 gap-4;
   }
