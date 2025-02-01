@@ -30,7 +30,7 @@ const LeagueManagement = () => {
     data,
     isLoading: leagueLading,
     isFetching,
-  } = useGetAllLeagueQuery({ page, searchTerm: searchQuery });
+  } = useGetAllLeagueQuery({ page, searchTerm: searchQuery, limit: 250 });
   const [create, { isLoading }] = useCreateLeagueMutation();
   const [update, { isLoading: isEditing }] = useUpdateLeagueMutation();
   const [deleteLeague, { isLoading: isDeleting }] = useDeleteLeagueMutation();
@@ -176,7 +176,7 @@ const LeagueManagement = () => {
   ];
 
   return (
-    <div className="h-screen overflow-y-scroll bg-[var(--bg-gray-20)] p-4">
+    <div className="h-[80vh] overflow-y-scroll bg-[var(--bg-gray-20)] p-4">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">

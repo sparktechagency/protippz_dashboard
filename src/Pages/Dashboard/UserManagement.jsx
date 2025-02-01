@@ -131,7 +131,7 @@ const UserManagement = () => {
 
   return (
     <div
-      className="h-screen"
+      className="Oulet-scroll h-screen overflow-y-scroll"
       style={{
         padding: "20px",
         backgroundColor: "var(--bg-gray-20)",

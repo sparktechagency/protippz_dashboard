@@ -39,7 +39,7 @@ const Sidebar = () => {
     return false;
   };
   return (
-    <div className="px-4 pb-10 flex justify-start flex-col gap-3 sidebar">
+    <div className=" px-4 pb-10 flex justify-start flex-col gap-3 sidebar">
       {/* <p className='text-6xl text-center text-[var(--bg-white)] my-4 font-bold'>ilera</p> */}
       <img src={logo} alt="Protippz logo" />
       {SidebarLink?.map((item) => (

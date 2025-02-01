@@ -35,7 +35,7 @@ const DashboardHome = () => {
         },
     ]
     return (
-        <div className='bg-[var(--bg-gray-20)] p-4 rounded-md'>
+        <div className=' bg-[var(--bg-gray-20)] p-4 rounded-md'>
             {
                 isLoading && <Loading />
             }

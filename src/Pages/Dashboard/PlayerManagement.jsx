@@ -437,7 +437,7 @@ const PlayerManagement = () => {
   };
 
   return (
-    <div className="p-4 h-screen overflow-y-scroll bg-[var(--bg-gray-20)]">
+    <div className="p-4 h-[80vh] overflow-y-scroll bg-[var(--bg-gray-20)]">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <Link to={-1}>

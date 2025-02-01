@@ -434,7 +434,7 @@ const TeamManagement = () => {
     }) || [];
 
   return (
-    <div className="p-4 h-screen overflow-y-scroll bg-[var(--bg-gray-20)]">
+    <div className="p-4 h-[80vh] overflow-y-scroll bg-[var(--bg-gray-20)]">
       <div
         style={{
           display: "flex",
