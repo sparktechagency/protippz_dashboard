@@ -1,7 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import  { useState } from "react";
 import { Table, Button, Tag, Modal } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import UserImageName from "./UserImageName";

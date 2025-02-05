@@ -8,7 +8,7 @@ import { HiLogout } from "react-icons/hi";
 import logo from "../../assets/logo.png";
 import { FaFileCsv } from "react-icons/fa";
 import { Modal } from "antd";
-import { useUploadCsvMutation } from "../../Redux/Apis/manageApis";
+
 import UploadCsv from "./UploadCsv";
 const Sidebar = () => {
   // State
@@ -33,11 +33,6 @@ const Sidebar = () => {
     }
   }, [ref, location.pathname]);
 
-  const [upload] = useUploadCsvMutation();
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const handleUpload = (file) => {
-    return false;
-  };
   return (
     <div className=" px-4 pb-10 flex justify-start flex-col gap-3 sidebar">
       {/* <p className='text-6xl text-center text-[var(--bg-white)] my-4 font-bold'>ilera</p> */}
@@ -100,32 +95,27 @@ const Sidebar = () => {
       </div>
       <div
         ref={ref}
-        className={`flex justify-start flex-col gap-1 transition-all duration-300 overflow-y-hidden`}
+        className={`flex justify-start flex-col gap-1 transition-all rounded-md duration-300 overflow-hidden`}
         style={{
           height: open ? `${ref.current.scrollHeight}px` : "0",
         }}
       >
-        {SettingLinks?.map(
-          (
-            item,
-            i //:has(.active)
-          ) => (
-            <NavLink
-              to={item?.path}
-              key={item?.path}
-              style={{
-                width: "100%",
-                justifyContent: "start",
-                paddingLeft: "14px",
-                paddingRight: "14px",
-                border: "none",
-              }}
-              className="button-white w-full whitespace-nowrap links"
-            >
-              {item?.label}
-            </NavLink>
-          )
-        )}
+        {SettingLinks?.map((item) => (
+          <NavLink
+            to={item?.path}
+            key={item?.path}
+            style={{
+              width: "100%",
+              justifyContent: "start",
+              paddingLeft: "14px",
+              paddingRight: "14px",
+              border: "none",
+            }}
+            className="button-white overflow-hidden rounded-md w-full whitespace-nowrap links"
+          >
+            {item?.label}
+          </NavLink>
+        ))}
       </div>
       <button
         onClick={() => {
@@ -141,7 +131,7 @@ const Sidebar = () => {
         }}
         className="button-white w-full whitespace-nowrap links"
       >
-        <HiLogout /> Logo Out
+        <HiLogout /> Log Out
       </button>
       <Modal
         centered

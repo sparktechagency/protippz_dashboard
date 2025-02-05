@@ -1,5 +1,5 @@
-import { Form, Input, Spin } from "antd";
-import React, { useState } from "react";
+import { Form, Input } from "antd";
+import { useState } from "react";
 import { LoginFields } from "../../Utils/FormFields/Login";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -10,15 +10,8 @@ import {
 } from "../../Redux/Apis/authApi";
 import toast from "react-hot-toast";
 import Loading from "../../Components/Shared/Loading";
-import { TbBackground } from "react-icons/tb";
-
 const Login = () => {
-  const {
-    data,
-    isLoading: fetchingProfile,
-    isError,
-    error,
-  } = useGetProfileQuery();
+  const { data, isLoading: fetchingProfile } = useGetProfileQuery();
   const navigate = useNavigate();
   const location = useLocation();
   if (
@@ -28,19 +21,17 @@ const Login = () => {
   ) {
     navigate(location?.state || "/");
   }
-  //states
+
   const [password_type, set_password_type] = useState(null);
   const [LoginUser, { isLoading }] = useLoginUserMutation();
 
-  // handler
   const onSubmitLoginForm = (value) => {
     LoginUser(value)
       .unwrap()
       .then((res) => {
         localStorage.setItem("token", JSON.stringify(res?.data?.accessToken));
         toast.success(res.data?.message || "logged in successfully");
-        // window.location.reload()
-        // return navigate(location?.state || '/')
+
         window.location.href = "/";
       })
       .catch((err) =>
@@ -51,6 +42,7 @@ const Login = () => {
     <div className="h-screen w-full bg-[var(--bg-gray-20)] center-center">
       {isLoading && <Loading />}
       <Form
+        requiredMark={false}
         className="max-w-[550px] w-full bg-[var(--bg-white)] p-10 py-20 rounded-md card-shadow"
         layout="vertical"
         onFinish={onSubmitLoginForm}
