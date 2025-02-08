@@ -31,9 +31,9 @@ const TipManagement = () => {
         render: (createdAt) => {
           const date = new Date(createdAt);
           return (
-            <span>{`${date.getDate()}/${
-              date.getMonth() + 1
-            }/${date.getFullYear()}`}</span>
+            <span>{`${date.toLocaleString("en-US", {
+              month: "short",
+            })} ${date.getDate()}, ${date.getFullYear()}`}</span>
           );
         },
       },

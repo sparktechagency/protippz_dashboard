@@ -22,7 +22,23 @@ const Transaction = () => {
       key: "createdAt",
       render: (createdAt) => {
         const date = new Date(createdAt);
-        return <span>{`${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`}</span>;
+        const month = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ][date.getMonth()];
+        return (
+          <span>{`${month} ${date.getDate()}, ${date.getFullYear()}`}</span>
+        );
       },
     },
     {
