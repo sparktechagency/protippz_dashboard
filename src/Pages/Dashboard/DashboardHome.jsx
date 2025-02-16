@@ -17,27 +17,33 @@ const DashboardHome = () => {
     {
       name: "Total Users",
       icon: <img src={icon1} alt="user" />,
-      total: `${data?.data?.totalUser || 0}`,
+      total: `${
+        new Intl.NumberFormat("en-US").format(data?.data?.totalUser) || 0
+      }`,
     },
     {
       name: "Total Leagues",
       icon: <img src={icon2} alt="Leagues" />,
-      total: data?.data?.totalLeague || 0,
+      total:
+        new Intl.NumberFormat("en-US").format(data?.data?.totalLeague) || 0,
     },
     {
       name: "Total Teams",
       icon: <img src={icon3} alt="" />,
-      total: data?.data?.totalTeam || 0,
+      total: new Intl.NumberFormat("en-US").format(data?.data?.totalTeam) || 0,
     },
     {
       name: "Total Players",
       icon: <img src={icon4} alt="teams" />,
-      total: data?.data?.totalPlayer || 0,
+      total:
+        new Intl.NumberFormat("en-US").format(data?.data?.totalPlayer) || 0,
     },
     {
       name: "Total Tip",
       icon: <img className="w-16" src={icon5} alt="total tip" />,
-      total: `$ ${data?.data?.totalTip || 0}`,
+      total: `$ ${
+        new Intl.NumberFormat("en-US").format(data?.data?.totalTip) || 0
+      }`,
     },
   ];
   return (

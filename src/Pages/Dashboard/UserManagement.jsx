@@ -97,12 +97,13 @@ const UserManagement = () => {
       width: "20%",
       render: (value) => `${value || "N/A"}`,
     },
+    
     {
       title: "Total Tips",
       dataIndex: "totalTipSent",
       key: "totalTipSent",
       width: "20%",
-      render: (value) => `$${value}`,
+      render: (value) => `$${new Intl.NumberFormat("en-US").format(value)}`,
     },
     {
       title: "Action",

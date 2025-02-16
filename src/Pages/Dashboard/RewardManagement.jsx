@@ -71,6 +71,8 @@ const RewardManagement = () => {
       title: "Points Required",
       dataIndex: "pointRequired",
       key: "pointRequired",
+      render: (pointRequired) =>
+        `${new Intl.NumberFormat("en-US").format(pointRequired)}`,
     },
     { title: "Description", dataIndex: "description", key: "description" },
     {

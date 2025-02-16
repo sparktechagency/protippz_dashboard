@@ -105,7 +105,7 @@ const AppointmentsOverview = () => {
       <div className="between-center mb-6">
         <ChartsHeading heading={`User Growth`} growthData={growthData} />
         <Select
-          defaultValue={appointment?.data?.currentYear}
+          defaultValue={year}
           className="min-w-32"
           placeholder="select year"
           onChange={(year) => setYear(year)}

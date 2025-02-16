@@ -60,7 +60,7 @@ const TipManagement = () => {
         title: "Tip Amount",
         dataIndex: "amount",
         key: "amount",
-        render: (amount) => `$${amount}`,
+        render: (amount) => `$${new Intl.NumberFormat("en-US").format(amount)}`,
         width: "15%",
       },
     ],
@@ -77,7 +77,14 @@ const TipManagement = () => {
         dataIndex: "createdAt",
         key: "createdAt",
         width: "15%",
-        render: (createdAt) => <span>{createdAt?.split("T")?.[0]}</span>,
+        render: (createdAt) => {
+          const date = new Date(createdAt);
+          return (
+            <span>{`${date.toLocaleString("en-US", {
+              month: "short",
+            })} ${date.getDate()}, ${date.getFullYear()}`}</span>
+          );
+        },
       },
       {
         title: "User's Name",
