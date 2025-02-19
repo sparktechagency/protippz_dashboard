@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Modal, Input, Button, Upload, Form, Image } from 'antd';
 import { CloseOutlined, CameraOutlined } from '@ant-design/icons';
-import { imageUrl, url } from '../../Utils/BaseUrl';
+import { imageUrl} from '../../Utils/BaseUrl';
 
 const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
     const [form] = Form.useForm();

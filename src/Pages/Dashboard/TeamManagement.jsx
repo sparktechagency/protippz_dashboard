@@ -33,7 +33,7 @@ import {
   useSendTipMutation,
   useUpdateTeamMutation,
 } from '../../Redux/Apis/teamApis';
-import { imageUrl, url } from '../../Utils/BaseUrl';
+import { imageUrl} from '../../Utils/BaseUrl';
 import { useGetAllLeagueQuery } from '../../Redux/Apis/leagueApis';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';

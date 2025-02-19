@@ -33,7 +33,7 @@ import {
   useUpdateRewardCategoryMutation,
   useDeleteRewardCategoryMutation,
 } from '../../Redux/Apis/rewardCategoryApis';
-import { imageUrl, url } from '../../Utils/BaseUrl';
+import { imageUrl} from '../../Utils/BaseUrl';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 

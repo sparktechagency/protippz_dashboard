@@ -1,6 +1,5 @@
-import React from 'react';
 import profile from '../../assets/icons/itachi.jpg';
-import { imageUrl, url } from '../../Utils/BaseUrl';
+import { imageUrl} from '../../Utils/BaseUrl';
 const UserImageName = ({ name, image }) => {
   return (
     <div className="start-center gap-2">

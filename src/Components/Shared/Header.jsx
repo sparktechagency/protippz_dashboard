@@ -1,5 +1,4 @@
 import { Badge } from 'antd'
-import React from 'react'
 import { IoIosNotifications } from 'react-icons/io'
 import profile from '../../assets/icons/itachi.jpg'
 import { useNavigate } from 'react-router-dom'

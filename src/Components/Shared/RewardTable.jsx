@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Table, Button, Tag, Modal } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import UserImageName from "./UserImageName";
-import { imageUrl, url } from "../../Utils/BaseUrl";
+import { imageUrl} from "../../Utils/BaseUrl";
 import { useUpdateStatusRedeemRequestMutation } from "../../Redux/Apis/redeemApis";
 import toast from "react-hot-toast";
 const RewardTable = ({ data, pagination }) => {

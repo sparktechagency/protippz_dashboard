@@ -1,7 +1,7 @@
 import { Input } from 'antd';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FaImage } from 'react-icons/fa6';
-import { imageUrl, url } from '../../Utils/BaseUrl';
+import { imageUrl} from '../../Utils/BaseUrl';
 
 const ImageUpload = ({ accept, setFiles, Files, multiple, image }) => {
   const [isDragging, setIsDragging] = useState(false);
