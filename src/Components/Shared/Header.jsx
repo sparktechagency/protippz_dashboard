@@ -4,7 +4,7 @@ import { IoIosNotifications } from 'react-icons/io'
 import profile from '../../assets/icons/itachi.jpg'
 import { useNavigate } from 'react-router-dom'
 import { useGetProfileQuery } from '../../Redux/Apis/authApi'
-import { url } from '../../Utils/BaseUrl'
+import { imageUrl } from '../../Utils/BaseUrl'
 import { useSocketContext } from '../../Context/SocketContext'
 const Header = () => {
     //states
@@ -19,7 +19,7 @@ const Header = () => {
                 <IoIosNotifications size={40} />
             </Badge>
             <div onClick={() => navigate('/profile')} className='center-center gap-2 px-3 w-fit py-1 border border-[var(--bg-white)] rounded-md cursor-pointer'>
-                <img className='w-10 h-10 rounded-full object-cover' src={data?.data?.img ? `${url}/${data?.data?.img}` : profile} alt="" />
+                <img className='w-10 h-10 rounded-full object-cover' src={data?.data?.img ? `${imageUrl(data?.data?.img)}` : profile} alt="" />
                 <p className='text-base text-[var(--color-white)]'>{data?.data?.name}</p>
             </div>
         </div>

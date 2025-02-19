@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Table, Button, Tag, Modal } from "antd";
 import { EyeOutlined } from "@ant-design/icons";
 import UserImageName from "./UserImageName";
-import { url } from "../../Utils/BaseUrl";
+import { imageUrl, url } from "../../Utils/BaseUrl";
 import { useUpdateStatusRedeemRequestMutation } from "../../Redux/Apis/redeemApis";
 import toast from "react-hot-toast";
 const RewardTable = ({ data, pagination }) => {
@@ -35,7 +35,7 @@ const RewardTable = ({ data, pagination }) => {
         <div className="flex flex-col gap-2">
           <div className="flex justify-center items-center my-2">
             <img
-              src={`${url}/${record?.reward?.reward_image}`}
+              src={`${imageUrl(record?.reward?.reward_image)}`}
               alt="Reward"
               style={{ width: "100px" }}
             />
@@ -80,7 +80,7 @@ const RewardTable = ({ data, pagination }) => {
         <div className="flex flex-col gap-2">
           <div className="flex justify-center items-center my-2">
             <img
-              src={`${url}/${record?.reward?.reward_image}`}
+              src={`${imageUrl(record?.reward?.reward_image)}`}
               alt="Reward"
               style={{ width: "100px" }}
             />

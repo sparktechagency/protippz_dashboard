@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Table,
   Button,
@@ -10,7 +10,7 @@ import {
   message,
   Image,
   Popconfirm,
-} from "antd";
+} from 'antd';
 import {
   PlusOutlined,
   EditOutlined,
@@ -18,28 +18,28 @@ import {
   CameraOutlined,
   ArrowLeftOutlined,
   CloseOutlined,
-} from "@ant-design/icons";
-import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
+} from '@ant-design/icons';
+import { FaSearch } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import {
   useGetAllRewardsQuery,
   useCreateRewardMutation,
   useUpdateRewardMutation,
   useDeleteRewardMutation,
-} from "../../Redux/Apis/rewardApis";
+} from '../../Redux/Apis/rewardApis';
 import {
   useGetAllRewardCategoriesQuery,
   useCreateRewardCategoryMutation,
   useUpdateRewardCategoryMutation,
   useDeleteRewardCategoryMutation,
-} from "../../Redux/Apis/rewardCategoryApis";
-import { url } from "../../Utils/BaseUrl";
-import toast from "react-hot-toast";
-import Swal from "sweetalert2";
+} from '../../Redux/Apis/rewardCategoryApis';
+import { imageUrl, url } from '../../Utils/BaseUrl';
+import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const RewardManagement = () => {
   const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
-  const [selectedView, setSelectedView] = useState("Reward");
+  const [selectedView, setSelectedView] = useState('Reward');
   const [selectedRecord, setSelectedRecord] = useState(null);
   const [form] = Form.useForm();
 
@@ -60,36 +60,36 @@ const RewardManagement = () => {
   const [deleteRewardCategory] = useDeleteRewardCategoryMutation();
 
   const rewardColumns = [
-    { title: "Reward Name", dataIndex: "name", key: "name" },
+    { title: 'Reward Name', dataIndex: 'name', key: 'name' },
     {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
+      title: 'Category',
+      dataIndex: 'category',
+      key: 'category',
       render: (category) => `${category?.name}`,
     },
     {
-      title: "Points Required",
-      dataIndex: "pointRequired",
-      key: "pointRequired",
+      title: 'Points Required',
+      dataIndex: 'pointRequired',
+      key: 'pointRequired',
       render: (pointRequired) =>
-        `${new Intl.NumberFormat("en-US").format(pointRequired)}`,
+        `${new Intl.NumberFormat('en-US').format(pointRequired)}`,
     },
-    { title: "Description", dataIndex: "description", key: "description" },
+    { title: 'Description', dataIndex: 'description', key: 'description' },
     {
-      title: "Image",
-      dataIndex: "reward_image",
-      key: "reward_image",
+      title: 'Image',
+      dataIndex: 'reward_image',
+      key: 'reward_image',
       render: (reward_image) => (
         <img
-          src={`${url}/${reward_image}`}
+          src={`${imageUrl(reward_image)}`}
           alt="reward"
           className="w-10 h-10"
         />
       ),
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <div className="flex space-x-2">
           <button
@@ -129,23 +129,27 @@ const RewardManagement = () => {
   ];
 
   const categoryColumns = [
-    { title: "Category Name", dataIndex: "name", key: "name" },
+    { title: 'Category Name', dataIndex: 'name', key: 'name' },
     {
-      title: "Delivery Option",
-      dataIndex: "deliveryOption",
-      key: "deliveryOption",
+      title: 'Delivery Option',
+      dataIndex: 'deliveryOption',
+      key: 'deliveryOption',
     },
     {
-      title: "Image",
-      dataIndex: "image",
-      key: "image",
+      title: 'Image',
+      dataIndex: 'image',
+      key: 'image',
       render: (image) => (
-        <img src={`${url}/${image}`} alt="category" className="w-10 h-10" />
+        <img
+          src={`${imageUrl({ image })}`}
+          alt="category"
+          className="w-10 h-10"
+        />
       ),
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <div className="flex space-x-2">
           <button
@@ -175,12 +179,12 @@ const RewardManagement = () => {
     setSelectedRecord(record);
     setIsAddEditModalVisible(true);
     // form.setFieldsValue(record);
-    if (selectedView === "Category") {
+    if (selectedView === 'Category') {
       form.setFieldsValue({
         categoryName: record?.name,
         deliveryOption: record?.deliveryOption,
       });
-      setCategoryImage(`${url}/${record?.image}`);
+      setCategoryImage(`${imageUrl(record?.image)}`);
     } else {
       form.setFieldsValue({
         name: record?.name,
@@ -188,7 +192,7 @@ const RewardManagement = () => {
         pointRequired: Number(record?.pointRequired),
         description: record?.description,
       });
-      setCategoryImage(`${url}/${record?.reward_image}`);
+      setCategoryImage(`${imageUrl(record?.reward_image)}`);
     }
   };
 
@@ -203,49 +207,49 @@ const RewardManagement = () => {
   //   };
   const handleDeleteReward = async (id) => {
     const result = await Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
     });
 
     if (result.isConfirmed) {
       try {
         await deleteReward(id).unwrap();
         Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
+          title: 'Deleted!',
+          text: 'Your file has been deleted.',
+          icon: 'success',
         });
-        message.success("Player deleted successfully");
+        message.success('Player deleted successfully');
       } catch (error) {
         Swal.fire({
-          title: "Error!",
-          text: "Failed to delete player.",
-          icon: "error",
+          title: 'Error!',
+          text: 'Failed to delete player.',
+          icon: 'error',
         });
-        message.error("Failed to delete player");
+        message.error('Failed to delete player');
       }
     } else {
-      message.info("Delete operation canceled");
+      message.info('Delete operation canceled');
     }
   };
   const handleDeleteCategory = async (id) => {
     try {
       await deleteRewardCategory(id).unwrap();
-      message.success("Category deleted successfully");
+      message.success('Category deleted successfully');
     } catch (error) {
-      message.error("Failed to delete category");
+      message.error('Failed to delete category');
     }
   };
 
   const handleFinish = async (values) => {
     try {
-      if (selectedView === "Reward") {
+      if (selectedView === 'Reward') {
         const data = {
           name: values?.name,
           category: values?.category,
@@ -284,7 +288,7 @@ const RewardManagement = () => {
               toast.error(err?.data?.message);
             });
         }
-      } else if (selectedView === "Category") {
+      } else if (selectedView === 'Category') {
         const data = {
           name: values?.categoryName,
           deliveryOption: values?.deliveryOption,
@@ -323,7 +327,7 @@ const RewardManagement = () => {
         }
       }
     } catch (error) {
-      message.error("Failed to save");
+      message.error('Failed to save');
     }
   };
 
@@ -334,10 +338,10 @@ const RewardManagement = () => {
           <Link to={-1}>
             <ArrowLeftOutlined
               style={{
-                color: "#52c41a",
-                fontSize: "18px",
-                cursor: "pointer",
-                marginRight: "8px",
+                color: '#52c41a',
+                fontSize: '18px',
+                cursor: 'pointer',
+                marginRight: '8px',
               }}
             />
           </Link>
@@ -353,21 +357,21 @@ const RewardManagement = () => {
       <div className="flex space-x-2 mb-3">
         <button
           className={`${
-            selectedView === "Reward"
-              ? "bg-green-500 text-white"
-              : "bg-green-100 text-green-500"
+            selectedView === 'Reward'
+              ? 'bg-green-500 text-white'
+              : 'bg-green-100 text-green-500'
           } px-4 rounded-md py-1`}
-          onClick={() => setSelectedView("Reward")}
+          onClick={() => setSelectedView('Reward')}
         >
           Reward
         </button>
         <button
           className={`${
-            selectedView === "Category"
-              ? "bg-green-500 text-white"
-              : "bg-green-100 text-green-500"
+            selectedView === 'Category'
+              ? 'bg-green-500 text-white'
+              : 'bg-green-100 text-green-500'
           } px-4 rounded-md py-1`}
-          onClick={() => setSelectedView("Category")}
+          onClick={() => setSelectedView('Category')}
         >
           Category
         </button>
@@ -382,14 +386,14 @@ const RewardManagement = () => {
       </Button>
       <Table
         dataSource={
-          selectedView === "Reward"
+          selectedView === 'Reward'
             ? rewardData?.data?.result
             : categoryData?.data?.result
         }
-        columns={selectedView === "Reward" ? rewardColumns : categoryColumns}
+        columns={selectedView === 'Reward' ? rewardColumns : categoryColumns}
         rowKey="id"
         loading={isLoadingRewards || isLoadingCategories}
-        pagination={{ position: ["bottomCenter"], pageSize: 10 }}
+        pagination={{ position: ['bottomCenter'], pageSize: 10 }}
       />
       <Modal
         visible={isAddEditModalVisible}
@@ -398,10 +402,10 @@ const RewardManagement = () => {
         centered
       >
         <h2 className="text-center font-semibold text-lg mb-6">
-          {selectedRecord ? "Edit" : "Add"} {selectedView}
+          {selectedRecord ? 'Edit' : 'Add'} {selectedView}
         </h2>
         <Form form={form} layout="vertical" onFinish={handleFinish}>
-          {selectedView === "Reward" && (
+          {selectedView === 'Reward' && (
             <>
               <Form.Item
                 name="name"
@@ -433,14 +437,14 @@ const RewardManagement = () => {
               <Form.Item name="description" label="Description">
                 <Input.TextArea
                   style={{
-                    resize: "none",
+                    resize: 'none',
                   }}
                   placeholder="Enter description"
                 />
               </Form.Item>
             </>
           )}
-          {selectedView === "Category" && (
+          {selectedView === 'Category' && (
             <>
               <Form.Item
                 name="categoryName"
@@ -456,8 +460,8 @@ const RewardManagement = () => {
               >
                 <Select
                   options={[
-                    { label: "Email", value: "Email" },
-                    { label: "Shipping Address", value: "Shipping Address" },
+                    { label: 'Email', value: 'Email' },
+                    { label: 'Shipping Address', value: 'Shipping Address' },
                   ]}
                 />
               </Form.Item>

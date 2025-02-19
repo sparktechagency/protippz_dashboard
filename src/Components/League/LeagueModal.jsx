@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Input, Button, Upload, Form, Image } from 'antd';
 import { CloseOutlined, CameraOutlined } from '@ant-design/icons';
-import { url } from '../../Utils/BaseUrl';
+import { imageUrl, url } from '../../Utils/BaseUrl';
 
 const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
     const [form] = Form.useForm();
@@ -13,7 +13,7 @@ const LeagueModal = ({ visible, onClose, onSubmit, isEdit, leagueData }) => {
                 name: leagueData.name,
                 sport: leagueData.sport,
             });
-            setPreviewImage(`${url}/${leagueData.league_image}`); // Set preview image for editing
+            setPreviewImage(`${imageUrl(leagueData.league_image)}`); // Set preview image for editing
         } else {
             form.resetFields();
             setPreviewImage(null); // Reset preview when adding a new league

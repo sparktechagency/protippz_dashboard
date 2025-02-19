@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from 'react';
 import {
   Table,
   Button,
@@ -10,7 +10,7 @@ import {
   message,
   Image,
   Spin,
-} from "antd";
+} from 'antd';
 import {
   PlusOutlined,
   EyeOutlined,
@@ -21,9 +21,9 @@ import {
   CopyOutlined,
   ArrowLeftOutlined,
   CloseOutlined,
-} from "@ant-design/icons";
-import { FaSearch } from "react-icons/fa";
-import { Link } from "react-router-dom";
+} from '@ant-design/icons';
+import { FaSearch } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import {
   useGetAllPlayerQuery,
   useCreatePlayerMutation,
@@ -32,14 +32,14 @@ import {
   useInvitePlayerMutation,
   useSendPlayerTipMutation,
   useDeletePlayerSelectedMutation,
-} from "../../Redux/Apis/playerApis";
-import { useGetAllLeagueQuery } from "../../Redux/Apis/leagueApis";
-import { useGetAllTeamQuery } from "../../Redux/Apis/teamApis";
-import { url } from "../../Utils/BaseUrl";
-import toast from "react-hot-toast";
-import Swal from "sweetalert2";
-import { CSVLink } from "react-csv";
-import { BsFiletypeCsv } from "react-icons/bs";
+} from '../../Redux/Apis/playerApis';
+import { useGetAllLeagueQuery } from '../../Redux/Apis/leagueApis';
+import { useGetAllTeamQuery } from '../../Redux/Apis/teamApis';
+import { imageUrl } from '../../Utils/BaseUrl';
+import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
+import { CSVLink } from 'react-csv';
+import { BsFiletypeCsv } from 'react-icons/bs';
 
 const PlayerManagement = () => {
   const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
@@ -51,14 +51,14 @@ const PlayerManagement = () => {
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [form] = Form.useForm();
 
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(250);
+  const [limit] = useState(250);
   const [profileImage, setProfileImage] = useState(null);
   const [BgImage, setBgImage] = useState(null);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  const [league, setLeague] = useState("");
+  const [league, setLeague] = useState('');
 
   const userNameRef = useRef();
   const passwordRef = useRef();
@@ -107,62 +107,65 @@ const PlayerManagement = () => {
   const exportDataCsv = () => {
     if (!csvPlayer?.data?.result) return [];
     return csvPlayer?.data.result.map((player) => ({
-      _id: player?._id || "N/A",
-      name: player?.name || "N/A",
-      league_id: player?.league?._id || "N/A",
-      league_name: player?.league?.name || "N/A",
-      sport: player?.league?.sport || "N/A",
-      team_id: player?.team?._id || "N/A",
-      team_name: player?.team?.name || "N/A",
-      position: player?.position || "N/A",
-      player_image: player?.player_image || "N/A",
-      player_bg_image: player?.player_bg_image || "N/A",
+      _id: player?._id || 'N/A',
+      name: player?.name || 'N/A',
+      league_id: player?.league?._id || 'N/A',
+      league_name: player?.league?.name || 'N/A',
+      sport: player?.league?.sport || 'N/A',
+      team_id: player?.team?._id || 'N/A',
+      team_name: player?.team?.name || 'N/A',
+      position: player?.position || 'N/A',
+      player_image: player?.player_image || 'N/A',
+      player_bg_image: player?.player_bg_image || 'N/A',
       totalTips: player?.totalTips || 0,
       paidAmount: player?.paidAmount || 0,
       dueAmount: player?.dueAmount || 0,
       isStripeConnected: player?.isStripeConnected || false,
-      createdAt: player?.createdAt || "N/A",
-      updatedAt: player?.updatedAt || "N/A",
+      createdAt: player?.createdAt || 'N/A',
+      updatedAt: player?.updatedAt || 'N/A',
       __v: player?.__v || 0,
       isBookmark: player?.isBookmark || false,
     }));
   };
 
-
   const columns = [
-    { title: "Player Name", dataIndex: "name", key: "name" },
+    { title: 'Player Name', dataIndex: 'name', key: 'name' },
     {
-      title: "League",
-      dataIndex: "league",
-      key: "league",
+      title: 'League',
+      dataIndex: 'league',
+      key: 'league',
       render: (league) => `${league?.name}`,
     },
     {
-      title: "Team",
-      dataIndex: "team",
-      key: "team",
+      title: 'Team',
+      dataIndex: 'team',
+      key: 'team',
       render: (team) => `${team?.name}`,
     },
-    { title: "Position", dataIndex: "position", key: "position" },
+    { title: 'Position', dataIndex: 'position', key: 'position' },
     {
-      title: "Profile Image",
-      dataIndex: "player_image",
-      key: "player_image",
+      title: 'Profile Image',
+      dataIndex: 'player_image',
+      key: 'player_image',
       render: (player_image) => (
-        <img src={`${url}/${player_image}`} alt="bg" className="w-14 h-10" />
+        <img src={`${imageUrl(player_image)}`} alt="bg" className="w-14 h-10" />
       ),
     },
     {
-      title: "Background Image",
-      dataIndex: "player_bg_image",
-      key: "player_bg_image",
+      title: 'Background Image',
+      dataIndex: 'player_bg_image',
+      key: 'player_bg_image',
       render: (player_bg_image) => (
-        <img src={`${url}/${player_bg_image}`} alt="bg" className="w-14 h-10" />
+        <img
+          src={`${imageUrl(player_bg_image)}`}
+          alt="bg"
+          className="w-14 h-10"
+        />
       ),
     },
     {
-      title: "Tips Details",
-      key: "tipsDetails",
+      title: 'Tips Details',
+      key: 'tipsDetails',
       render: (_, record) => (
         <button
           onClick={() => handleTipsDetails(record)}
@@ -173,15 +176,15 @@ const PlayerManagement = () => {
       ),
     },
     {
-      title: "Invite",
-      key: "invite",
+      title: 'Invite',
+      key: 'invite',
       render: (_, record) => (
         <button
           onClick={() => handleInvite(record)}
           className={`${
             record?.invitedPassword || record?.userName
-              ? "bg-red-500"
-              : "bg-blue-500"
+              ? 'bg-red-500'
+              : 'bg-blue-500'
           } text-white text-xl p-2 py-1 rounded-md`}
         >
           <MailOutlined />
@@ -189,8 +192,8 @@ const PlayerManagement = () => {
       ),
     },
     {
-      title: "Action",
-      key: "action",
+      title: 'Action',
+      key: 'action',
       render: (_, record) => (
         <div className="flex space-x-2">
           <button
@@ -233,8 +236,8 @@ const PlayerManagement = () => {
       team: player?.team?._id,
       position: player?.position,
     });
-    setBgImage(`${url}/${player?.player_bg_image}`);
-    setProfileImage(`${url}/${player?.player_image}`);
+    setBgImage(`${imageUrl(player?.player_bg_image)}`);
+    setProfileImage(`${imageUrl(player?.player_image)}`);
   };
 
   const handleTipsDetails = (player) => {
@@ -245,22 +248,22 @@ const PlayerManagement = () => {
   const handleInvite = (player) => {
     setSelectedPlayer(player?._id);
     const data = {
-      userName: player.username || "",
-      invitedPassword: player.invitedPassword || "",
+      userName: player.username || '',
+      invitedPassword: player.invitedPassword || '',
     };
     setInvitedData(data);
     setIsInviteModalVisible(true);
   };
   const handleDeleteManyPlayer = async () => {
     const result = await Swal.fire({
-      title: "Are you sure you want to delete this team?",
+      title: 'Are you sure you want to delete this team?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
     });
 
     if (result.isConfirmed) {
@@ -271,57 +274,57 @@ const PlayerManagement = () => {
       try {
         await deleteSelect(deleteData).unwrap();
         Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
+          title: 'Deleted!',
+          text: 'Your file has been deleted.',
+          icon: 'success',
         });
-        message.success("Player deleted successfully");
+        message.success('Player deleted successfully');
         setSelectItemId([]);
         setSelectedRowKeys([]);
       } catch (error) {
         Swal.fire({
-          title: "Error!",
+          title: 'Error!',
           text: `Failed to delete player.`,
-          icon: "error",
+          icon: 'error',
         });
-        message.error("Failed to delete player", error);
+        message.error('Failed to delete player', error);
       }
     } else {
-      message.info("Delete operation canceled");
+      message.info('Delete operation canceled');
     }
   };
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
-      title: "Are you sure?",
+      title: 'Are you sure?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Cancel",
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
     });
 
     if (result.isConfirmed) {
       try {
         await deletePlayer(id).unwrap();
         Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
+          title: 'Deleted!',
+          text: 'Your file has been deleted.',
+          icon: 'success',
         });
-        message.success("Player deleted successfully");
+        message.success('Player deleted successfully');
       } catch (error) {
         Swal.fire({
-          title: "Error!",
-          text: "Failed to delete player.",
-          icon: "error",
+          title: 'Error!',
+          text: 'Failed to delete player.',
+          icon: 'error',
         });
-        message.error("Failed to delete player");
+        message.error('Failed to delete player');
       }
     } else {
-      message.info("Delete operation canceled");
+      message.info('Delete operation canceled');
     }
   };
 
@@ -411,14 +414,14 @@ const PlayerManagement = () => {
   // };
 
   const handleCopy = (type) => {
-    if (type === "password" && passwordRef.current) {
+    if (type === 'password' && passwordRef.current) {
       passwordRef.current.select();
-      document.execCommand("copy");
-      toast.success("Password copied successfully!");
-    } else if (type === "username" && userNameRef.current) {
+      document.execCommand('copy');
+      toast.success('Password copied successfully!');
+    } else if (type === 'username' && userNameRef.current) {
       userNameRef.current.select();
-      document.execCommand("copy");
-      toast.success("Username copied successfully!");
+      document.execCommand('copy');
+      toast.success('Username copied successfully!');
     }
   };
 
@@ -430,7 +433,7 @@ const PlayerManagement = () => {
       setSelectItemId(selectedIds);
     },
     getCheckboxProps: (record) => ({
-      disabled: record.name === "Disabled User",
+      disabled: record.name === 'Disabled User',
       // Column configuration not to be checked
       name: record.name,
     }),
@@ -443,10 +446,10 @@ const PlayerManagement = () => {
           <Link to={-1}>
             <ArrowLeftOutlined
               style={{
-                color: "#52c41a",
-                fontSize: "18px",
-                cursor: "pointer",
-                marginRight: "8px",
+                color: '#52c41a',
+                fontSize: '18px',
+                cursor: 'pointer',
+                marginRight: '8px',
               }}
             />
           </Link>
@@ -456,31 +459,31 @@ const PlayerManagement = () => {
             className="ml-4 bg-[#2FC191] text-white"
             onClick={() => setCsvReady(true)}
           >
-            {csvDataLoading ? "Processing your Data..." : "Download CSV"}
+            {csvDataLoading ? 'Processing your Data...' : 'Download CSV'}
           </Button>
           <div>
             {csvPlayer?.data && (
               <CSVLink
                 data={exportDataCsv()}
                 headers={[
-                  { label: "ID", key: "_id" },
-                  { label: "Name", key: "name" },
-                  { label: "League ID", key: "league_id" },
-                  { label: "League Name", key: "league_name" },
-                  { label: "Sport", key: "sport" },
-                  { label: "Team ID", key: "team_id" },
-                  { label: "Team Name", key: "team_name" },
-                  { label: "Position", key: "position" },
-                  { label: "Player Image", key: "player_image" },
-                  { label: "Player BG Image", key: "player_bg_image" },
-                  { label: "Total Tips", key: "totalTips" },
-                  { label: "Paid Amount", key: "paidAmount" },
-                  { label: "Due Amount", key: "dueAmount" },
-                  { label: "Is Stripe Connected", key: "isStripeConnected" },
-                  { label: "Created At", key: "createdAt" },
-                  { label: "Updated At", key: "updatedAt" },
-                  { label: "Version", key: "__v" },
-                  { label: "Bookmark", key: "isBookmark" },
+                  { label: 'ID', key: '_id' },
+                  { label: 'Name', key: 'name' },
+                  { label: 'League ID', key: 'league_id' },
+                  { label: 'League Name', key: 'league_name' },
+                  { label: 'Sport', key: 'sport' },
+                  { label: 'Team ID', key: 'team_id' },
+                  { label: 'Team Name', key: 'team_name' },
+                  { label: 'Position', key: 'position' },
+                  { label: 'Player Image', key: 'player_image' },
+                  { label: 'Player BG Image', key: 'player_bg_image' },
+                  { label: 'Total Tips', key: 'totalTips' },
+                  { label: 'Paid Amount', key: 'paidAmount' },
+                  { label: 'Due Amount', key: 'dueAmount' },
+                  { label: 'Is Stripe Connected', key: 'isStripeConnected' },
+                  { label: 'Created At', key: 'createdAt' },
+                  { label: 'Updated At', key: 'updatedAt' },
+                  { label: 'Version', key: '__v' },
+                  { label: 'Bookmark', key: 'isBookmark' },
                 ]}
                 filename={`user-management-${new Date().toISOString()}.csv`}
                 className="flex items-center ml-2 justify-center gap-2"
@@ -488,14 +491,14 @@ const PlayerManagement = () => {
               >
                 <Button
                   style={{
-                    backgroundColor: "#053697",
-                    color: "white",
+                    backgroundColor: '#053697',
+                    color: 'white',
                   }}
                   onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor = "#053692")
+                    (e.target.style.backgroundColor = '#053692')
                   }
                   onMouseLeave={(e) =>
-                    (e.target.style.backgroundColor = "#053697")
+                    (e.target.style.backgroundColor = '#053697')
                   }
                 >
                   <BsFiletypeCsv />
@@ -553,13 +556,13 @@ const PlayerManagement = () => {
         <div className="flex items-center justify-between w-full">
           <Button
             disabled={selectItemId?.length === 0}
-            icon={deletingSelect ? "" : <PlusOutlined className="rotate-45" />}
+            icon={deletingSelect ? '' : <PlusOutlined className="rotate-45" />}
             onClick={handleDeleteManyPlayer}
             className={`bg-red-500 mb-3 ${
-              selectItemId?.length === 0 ? "cursor-not-allowed" : ""
+              selectItemId?.length === 0 ? 'cursor-not-allowed' : ''
             }`}
           >
-            {deletingSelect ? <Spin size="small" /> : "Delete Selected"}
+            {deletingSelect ? <Spin size="small" /> : 'Delete Selected'}
           </Button>
           <Button
             type="primary"
@@ -576,12 +579,12 @@ const PlayerManagement = () => {
         dataSource={players?.data?.result || []}
         columns={columns}
         rowSelection={{
-          type: "checkbox",
+          type: 'checkbox',
           ...rowSelection,
         }}
         rowKey="_id"
         pagination={{
-          position: ["bottomCenter"],
+          position: ['bottomCenter'],
           pageSize: players?.data?.meta?.limit,
           total: players?.data?.meta?.total,
           onChange: (page) => setPage(page),
@@ -607,7 +610,7 @@ const PlayerManagement = () => {
         centered
       >
         <h2 className="text-center font-semibold text-lg mb-6">
-          {selectedPlayer ? "Edit Player" : "Add Player"}
+          {selectedPlayer ? 'Edit Player' : 'Add Player'}
         </h2>
         <Form form={form} layout="vertical" onFinish={handleFinish}>
           <Form.Item
@@ -738,15 +741,15 @@ const PlayerManagement = () => {
         <h2 className="text-center font-semibold text-lg mb-6">Tips Details</h2>
         <div className="space-y-4">
           <p>
-            Total Tips:{" "}
+            Total Tips:{' '}
             <span className="float-right">{selectedPlayer?.totalTips}</span>
           </p>
           <p>
-            Paid Amount:{" "}
+            Paid Amount:{' '}
             <span className="float-right">{selectedPlayer?.paidAmount}</span>
           </p>
           <p>
-            Due:{" "}
+            Due:{' '}
             <span className="float-right">{selectedPlayer?.dueAmount}</span>
           </p>
           <p>send money</p>
@@ -791,7 +794,7 @@ const PlayerManagement = () => {
             label="User Name"
             rules={[
               {
-                message: "Username is required",
+                message: 'Username is required',
                 required: true,
               },
             ]}
@@ -800,7 +803,7 @@ const PlayerManagement = () => {
               // ref={(input) => input && input.select()}
               ref={userNameRef}
               addonAfter={
-                <button onClick={() => handleCopy("username")} type="button">
+                <button onClick={() => handleCopy('username')} type="button">
                   <CopyOutlined />
                 </button>
               }
@@ -811,7 +814,7 @@ const PlayerManagement = () => {
             label="Password"
             rules={[
               {
-                message: "Password is required",
+                message: 'Password is required',
                 required: true,
               },
             ]}
@@ -820,7 +823,7 @@ const PlayerManagement = () => {
               // ref={(input) => input && input.select()}
               ref={passwordRef}
               addonAfter={
-                <button onClick={() => handleCopy("password")} type="button">
+                <button onClick={() => handleCopy('password')} type="button">
                   <CopyOutlined />
                 </button>
               }
@@ -831,8 +834,8 @@ const PlayerManagement = () => {
             htmlType="submit"
           >
             {invitedData?.userName || invitedData?.invitedPassword
-              ? "Already invited"
-              : "Invite"}
+              ? 'Already invited'
+              : 'Invite'}
           </Button>
         </Form>
       </Modal>
