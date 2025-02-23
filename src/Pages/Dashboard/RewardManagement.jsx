@@ -33,7 +33,7 @@ import {
   useUpdateRewardCategoryMutation,
   useDeleteRewardCategoryMutation,
 } from '../../Redux/Apis/rewardCategoryApis';
-import { imageUrl} from '../../Utils/BaseUrl';
+import { imageUrl } from '../../Utils/BaseUrl';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 
@@ -72,7 +72,10 @@ const RewardManagement = () => {
       dataIndex: 'pointRequired',
       key: 'pointRequired',
       render: (pointRequired) =>
-        `${new Intl.NumberFormat('en-US').format(pointRequired)}`,
+        `${new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(pointRequired)}`,
     },
     { title: 'Description', dataIndex: 'description', key: 'description' },
     {

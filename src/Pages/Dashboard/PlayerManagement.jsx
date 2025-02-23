@@ -742,15 +742,15 @@ const PlayerManagement = () => {
         <div className="space-y-4">
           <p>
             Total Tips:{' '}
-            <span className="float-right">{selectedPlayer?.totalTips}</span>
+            <span className="float-right">{selectedPlayer?.totalTips.toFixed(2)}</span>
           </p>
           <p>
             Paid Amount:{' '}
-            <span className="float-right">{selectedPlayer?.paidAmount}</span>
+            <span className="float-right">{selectedPlayer?.paidAmount.toFixed(2)}</span>
           </p>
           <p>
             Due:{' '}
-            <span className="float-right">{selectedPlayer?.dueAmount}</span>
+            <span className="float-right">{selectedPlayer?.dueAmount.toFixed(2)}</span>
           </p>
           <p>send money</p>
           <Input

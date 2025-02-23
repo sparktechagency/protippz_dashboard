@@ -1,48 +1,51 @@
-import { Suspense } from "react";
-import IncomeCard from "../../Components/Dashboard/IncomeCard";
-import IncomeOverView from "../../Components/Dashboard/IncomeOverView";
-import AppointmentsOverview from "../../Components/Dashboard/AppointmentsOverview";
-import { Link } from "react-router-dom";
-import { useGetDashboardDataQuery } from "../../Redux/Apis/dashboardApi";
-import Loading from "../../Components/Shared/Loading";
-import icon1 from "../../assets/icons/icon1.png";
-import icon2 from "../../assets/icons/icon2.png";
-import icon3 from "../../assets/icons/icon3.png";
-import icon4 from "../../assets/icons/icon4.png";
-import icon5 from "../../assets/icons/icon5.png";
-import RedeemRequest from "../../Components/Dashboard/RedeemRequest ";
+import { Suspense } from 'react';
+import IncomeCard from '../../Components/Dashboard/IncomeCard';
+import IncomeOverView from '../../Components/Dashboard/IncomeOverView';
+import AppointmentsOverview from '../../Components/Dashboard/AppointmentsOverview';
+import { Link } from 'react-router-dom';
+import { useGetDashboardDataQuery } from '../../Redux/Apis/dashboardApi';
+import Loading from '../../Components/Shared/Loading';
+import icon1 from '../../assets/icons/icon1.png';
+import icon2 from '../../assets/icons/icon2.png';
+import icon3 from '../../assets/icons/icon3.png';
+import icon4 from '../../assets/icons/icon4.png';
+import icon5 from '../../assets/icons/icon5.png';
+import RedeemRequest from '../../Components/Dashboard/RedeemRequest ';
 const DashboardHome = () => {
   const { data, isLoading } = useGetDashboardDataQuery();
   const formatData = [
     {
-      name: "Total Users",
+      name: 'Total Users',
       icon: <img src={icon1} alt="user" />,
-      total: `${
-        new Intl.NumberFormat("en-US").format(data?.data?.totalUser) || 0
-      }`,
+      total: `${new Intl.NumberFormat('en-US').format(
+        data?.data?.totalUser || 0
+      )}`,
     },
     {
-      name: "Total Leagues",
+      name: 'Total Leagues',
       icon: <img src={icon2} alt="Leagues" />,
       total:
-        new Intl.NumberFormat("en-US").format(data?.data?.totalLeague) || 0,
+        new Intl.NumberFormat('en-US').format(data?.data?.totalLeague) || 0,
     },
     {
-      name: "Total Teams",
+      name: 'Total Teams',
       icon: <img src={icon3} alt="" />,
-      total: new Intl.NumberFormat("en-US").format(data?.data?.totalTeam) || 0,
+      total: new Intl.NumberFormat('en-US').format(data?.data?.totalTeam) || 0,
     },
     {
-      name: "Total Players",
+      name: 'Total Players',
       icon: <img src={icon4} alt="teams" />,
       total:
-        new Intl.NumberFormat("en-US").format(data?.data?.totalPlayer) || 0,
+        new Intl.NumberFormat('en-US').format(data?.data?.totalPlayer) || 0,
     },
     {
-      name: "Total Tip",
+      name: 'Total Tip',
       icon: <img className="w-16" src={icon5} alt="total tip" />,
       total: `$ ${
-        new Intl.NumberFormat("en-US").format(data?.data?.totalTip) || 0
+        new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(data?.data?.totalTip) || 0
       }`,
     },
   ];
@@ -60,10 +63,10 @@ const DashboardHome = () => {
         ))}
       </div>
       <div className="grid-2 gap-3 mt-5">
-        <Suspense fallback={""}>
+        <Suspense fallback={''}>
           <IncomeOverView />
         </Suspense>
-        <Suspense fallback={""}>
+        <Suspense fallback={''}>
           <AppointmentsOverview />
         </Suspense>
       </div>
@@ -74,7 +77,7 @@ const DashboardHome = () => {
             View all
           </Link>
         </div>
-        <Suspense fallback={""}>
+        <Suspense fallback={''}>
           <RedeemRequest />
         </Suspense>
       </div>
