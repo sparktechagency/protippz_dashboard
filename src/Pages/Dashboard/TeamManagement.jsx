@@ -706,16 +706,23 @@ const TeamManagement = () => {
         <div className="space-y-4">
           <p>
             Total Tips:{' '}
-            <span className="float-right">{selectedTeam?.totalTips.toFixed(2)}</span>
+            <span className="float-right">
+              $ {selectedTeam?.totalTips.toFixed(2)}
+            </span>
           </p>
           <p>
             Paid Amount:{' '}
-            <span className="float-right">{selectedTeam?.paidAmount.toFixed(2)}</span>
+            <span className="float-right">
+              $ {selectedTeam?.paidAmount.toFixed(2)}
+            </span>
           </p>
           <p>
-            Due: <span className="float-right">{selectedTeam?.dueAmount.toFixed(2)}</span>
+            Due:{' '}
+            <span className="float-right">
+              $ {selectedTeam?.dueAmount.toFixed(2)}
+            </span>
           </p>
-          <p>send money</p>
+          <p>Send Money ($):</p>
           <Input
             value={tipAmount}
             onChange={(e) => setTipAmount(e?.target?.value)}
