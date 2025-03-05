@@ -401,18 +401,6 @@ const PlayerManagement = () => {
       });
   };
 
-  // const handleCopy = (type) => {
-  //   if (type === "password" && passwordRef?.current) {
-  //     passwordRef.current.select();
-  //     document.execCommand("copy");
-  //     toast.success("password copied successfully");
-  //   } else if (userNameRef?.current) {
-  //     userNameRef.current.select();
-  //     document.execCommand("copy");
-  //     toast.success("username copied successfully");
-  //   }
-  // };
-
   const handleCopy = (type) => {
     if (type === 'password' && passwordRef.current) {
       passwordRef.current.select();
@@ -507,43 +495,7 @@ const PlayerManagement = () => {
               </CSVLink>
             )}
           </div>
-          {/* <CSVLink
-            data={csvData}
-            headers={[
-              { label: "ID", key: "_id" },
-              { label: "Name", key: "name" },
-              { label: "League ID", key: "league_id" },
-              { label: "League Name", key: "league_name" },
-              { label: "Sport", key: "sport" },
-              { label: "Team ID", key: "team_id" },
-              { label: "Team Name", key: "team_name" },
-              { label: "Position", key: "position" },
-              { label: "Player Image", key: "player_image" },
-              { label: "Player BG Image", key: "player_bg_image" },
-              { label: "Total Tips", key: "totalTips" },
-              { label: "Paid Amount", key: "paidAmount" },
-              { label: "Due Amount", key: "dueAmount" },
-              { label: "Is Stripe Connected", key: "isStripeConnected" },
-              { label: "Created At", key: "createdAt" },
-              { label: "Updated At", key: "updatedAt" },
-              { label: "Version", key: "__v" },
-              { label: "Bookmark", key: "isBookmark" },
-            ]}
-            filename={`user-management-${new Date().toISOString()}.csv`}
-            className="flex items-center ml-2 justify-center gap-2"
-          >
-            <Button
-              style={{
-                backgroundColor: "#053697",
-                color: "white",
-              }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#053692")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#053697")}
-            >
-              <BsFiletypeCsv />
-              Export to CSV
-            </Button>
-          </CSVLink> */}
+       
         </div>
         <Input
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -742,15 +694,15 @@ const PlayerManagement = () => {
         <div className="space-y-4">
           <p>
             Total Tips:{' '}
-            <span className="float-right">$ {selectedPlayer?.totalTips.toFixed(2)}</span>
+            <span className="float-right">$ {selectedPlayer?.totalTips?.toFixed(2)}</span>
           </p>
           <p>
             Paid Amount:{' '}
-            <span className="float-right"> $ {selectedPlayer?.paidAmount.toFixed(2)}</span>
+            <span className="float-right"> $ {selectedPlayer?.paidAmount?.toFixed(2)}</span>
           </p>
           <p>
             Due:{' '}
-            <span className="float-right"> $ {selectedPlayer?.dueAmount.toFixed(2)}</span>
+            <span className="float-right"> $ {selectedPlayer?.dueAmount?.toFixed(2)}</span>
           </p>
           <p>Send Money ($):</p>
           <Input
