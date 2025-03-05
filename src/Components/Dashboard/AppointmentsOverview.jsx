@@ -84,8 +84,6 @@ const AppointmentsOverview = () => {
     responsive: true,
     maintainAspectRatio: false,
   };
-  // chart end
-  //data
   const growthData = [
     {
       name: "Yearly Growth",
