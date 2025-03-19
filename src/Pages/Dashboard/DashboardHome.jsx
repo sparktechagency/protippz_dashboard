@@ -10,33 +10,50 @@ import icon2 from '../../assets/icons/icon2.png';
 import icon3 from '../../assets/icons/icon3.png';
 import icon4 from '../../assets/icons/icon4.png';
 import icon5 from '../../assets/icons/icon5.png';
+import icon6 from '../../assets/icons/icon6.png';
+import icon7 from '../../assets/icons/team.png';
 import RedeemRequest from '../../Components/Dashboard/RedeemRequest ';
 const DashboardHome = () => {
   const { data, isLoading } = useGetDashboardDataQuery();
+  console.log(data);
+
   const formatData = [
     {
       name: 'Total Users',
-      icon: <img src={icon1} alt="user" />,
+      icon: <img className="w-20 h-20 object-cover" src={icon1} alt="user" />,
       total: `${new Intl.NumberFormat('en-US').format(
         data?.data?.totalUser || 0
       )}`,
     },
     {
       name: 'Total Leagues',
-      icon: <img src={icon2} alt="Leagues" />,
+      icon: <img className="w-20 h-20 object-cover" src={icon2} alt="Leagues" />,
       total:
         new Intl.NumberFormat('en-US').format(data?.data?.totalLeague) || 0,
     },
     {
       name: 'Total Teams',
-      icon: <img src={icon3} alt="" />,
+      icon: <img className="w-20 h-20 object-cover" src={icon3} alt="" />,
       total: new Intl.NumberFormat('en-US').format(data?.data?.totalTeam) || 0,
     },
     {
       name: 'Total Players',
-      icon: <img src={icon4} alt="teams" />,
+      icon: <img className="w-20 h-20 object-cover" src={icon4} alt="teams" />,
       total:
         new Intl.NumberFormat('en-US').format(data?.data?.totalPlayer) || 0,
+    },
+    {
+      name: 'Team Sign In',
+      icon: <img className="w-20 h-20 object-cover" src={icon7} alt="teams" />,
+      total:
+        new Intl.NumberFormat('en-US').format(data?.data?.totalTeamSignIn) || 0,
+    },
+    {
+      name: 'Player Sign In',
+      icon: <img className="w-20 h-20 object-cover" src={icon6} alt="teams" />,
+      total:
+        new Intl.NumberFormat('en-US').format(data?.data?.totalPlayerSignIn) ||
+        0,
     },
     {
       name: 'Total Tip',
@@ -52,7 +69,7 @@ const DashboardHome = () => {
   return (
     <div className=" bg-[var(--bg-gray-20)] p-4 rounded-md">
       {isLoading && <Loading />}
-      <div className="grid-5 gap-3">
+      <div className="grid-7 gap-3">
         {formatData?.map((item, i) => (
           <div
             key={i}
