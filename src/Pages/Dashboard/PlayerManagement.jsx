@@ -76,12 +76,17 @@ const PlayerManagement = () => {
       form.resetFields();
     }
   }, [invitedData, form]);
-
+  const [signIn, setSignIn] = useState(null);
   const {
     data: players,
     isFetching,
     isLoading,
-  } = useGetAllPlayerQuery({ searchTerm, page, limit });
+  } = useGetAllPlayerQuery({
+    searchTerm,
+    page,
+    limit,
+    ...(signIn !== null && signIn !== undefined ? { signIn } : {}),
+  });
   const { data: leagueData, isLoading: leagueLading } = useGetAllLeagueQuery({
     limit: 9999999,
   });
@@ -495,14 +500,24 @@ const PlayerManagement = () => {
               </CSVLink>
             )}
           </div>
-       
         </div>
-        <Input
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search here..."
-          prefix={<FaSearch />}
-          className="w-64"
-        />
+        <div>
+          <Select
+            placeholder="All"
+            defaultValue="false"
+            style={{ width: 120 }}
+            onChange={(value) => setSignIn(value)}
+          >
+            <Select.Option value="false">All</Select.Option>
+            <Select.Option value="true">Sign In</Select.Option>
+          </Select>
+          <Input
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search here..."
+            prefix={<FaSearch />}
+            className="w-64"
+          />
+        </div>
       </div>
       <div className="flex items-center justify-end w-full">
         <div className="flex items-center justify-between w-full">
@@ -694,15 +709,23 @@ const PlayerManagement = () => {
         <div className="space-y-4">
           <p>
             Total Tips:{' '}
-            <span className="float-right">$ {selectedPlayer?.totalTips?.toFixed(2)}</span>
+            <span className="float-right">
+              $ {selectedPlayer?.totalTips?.toFixed(2)}
+            </span>
           </p>
           <p>
             Paid Amount:{' '}
-            <span className="float-right"> $ {selectedPlayer?.paidAmount?.toFixed(2)}</span>
+            <span className="float-right">
+              {' '}
+              $ {selectedPlayer?.paidAmount?.toFixed(2)}
+            </span>
           </p>
           <p>
             Due:{' '}
-            <span className="float-right"> $ {selectedPlayer?.dueAmount?.toFixed(2)}</span>
+            <span className="float-right">
+              {' '}
+              $ {selectedPlayer?.dueAmount?.toFixed(2)}
+            </span>
           </p>
           <p>Send Money ($):</p>
           <Input

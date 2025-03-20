@@ -1,9 +1,10 @@
-import { baseApi } from "../BaseUrl";
+import { baseApi } from '../BaseUrl';
 const teamApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllTeam: builder.query({
-      query: ({ searchTerm, page, limit, league }) => {
-        const param = { searchTerm, page, limit };
+      query: ({ searchTerm, page, limit, league, signIn }) => {
+        const param = { searchTerm, page, limit, signIn };
+        console.log(signIn);
         if (league) {
           param.league = league;
         }
@@ -12,54 +13,54 @@ const teamApis = baseApi.injectEndpoints({
           params: param,
         };
       },
-      providesTags: ["team"],
+      providesTags: ['team'],
     }),
     createTeam: builder.mutation({
       query: (data) => ({
         url: `team/create`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["team"],
+      invalidatesTags: ['team'],
     }),
     updateTeam: builder.mutation({
       query: ({ id, data }) => ({
         url: `team/update/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ["team"],
+      invalidatesTags: ['team'],
     }),
     deleteTeam: builder.mutation({
       query: (id) => ({
         url: `team/delete/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["team"],
+      invalidatesTags: ['team'],
     }),
     deleteTeamSelected: builder.mutation({
       query: (data) => ({
         url: `/team/delete-teams`,
-        method: "DELETE",
+        method: 'DELETE',
         body: data,
       }),
-      invalidatesTags: ["team"],
+      invalidatesTags: ['team'],
     }),
     inviteTeam: builder.mutation({
       query: ({ id, data }) => ({
         url: `team/invite-team/${id}`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["team"],
+      invalidatesTags: ['team'],
     }),
     sendTip: builder.mutation({
       query: ({ id, data }) => ({
         url: `team/send-money/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ["team"],
+      invalidatesTags: ['team'],
     }),
   }),
 });

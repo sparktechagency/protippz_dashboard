@@ -10,6 +10,7 @@ import {
   Image,
   message,
   Spin,
+  Space,
 } from 'antd';
 import {
   PlusOutlined,
@@ -58,7 +59,7 @@ const TeamManagement = () => {
   const [page, setPage] = useState(1);
   const [league, setLeague] = useState('');
   const [tipAmount, setTipAmount] = useState(0);
-
+  const [signIn, setSignIn] = useState(null);
   const {
     data: leagueData,
     isLoading: leagueLading,
@@ -69,8 +70,8 @@ const TeamManagement = () => {
     league,
     page,
     limit: 250,
+    ...(signIn !== null && signIn !== undefined ? { signIn } : {}),
   });
-  //
 
   const [csvReady, setCsvReady] = useState(false);
 
@@ -532,12 +533,23 @@ const TeamManagement = () => {
             )}
           </div>
         </div>
-        <Input
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="Search here..."
-          prefix={<FaSearch />}
-          className="mb-6 w-64"
-        />
+        <div>
+          <Select
+            placeholder="All"
+            defaultValue="false"
+            style={{ width: 120 }}
+            onChange={(value) => setSignIn(value)}
+          >
+            <Select.Option value="false">All</Select.Option>
+            <Select.Option value="true">Sign In</Select.Option>
+          </Select>
+          <Input
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search here..."
+            prefix={<FaSearch />}
+            className="mb-6 w-64"
+          />
+        </div>
       </div>
       <div className="flex items-center justify-between w-full">
         <Button

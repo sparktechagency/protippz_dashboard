@@ -1,60 +1,60 @@
-import { baseApi } from "../BaseUrl";
+import { baseApi } from '../BaseUrl';
 
 const playerApis = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllPlayer: builder.query({
-      query: ({ searchTerm, page, limit }) => ({
+      query: ({ searchTerm, page, limit, signIn }) => ({
         url: `player/get-all`,
-        params: { searchTerm, page, limit },
+        params: { searchTerm, page, limit, signIn },
       }),
-      providesTags: ["player"],
+      providesTags: ['player'],
     }),
     createPlayer: builder.mutation({
       query: (data) => ({
         url: `player/create`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["player"],
+      invalidatesTags: ['player'],
     }),
     updatePlayer: builder.mutation({
       query: ({ id, data }) => ({
         url: `player/update/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ["player"],
+      invalidatesTags: ['player'],
     }),
     deletePlayerSelected: builder.mutation({
       query: (data) => ({
         url: `/player/delete-players`,
-        method: "DELETE",
+        method: 'DELETE',
         body: data,
       }),
-      invalidatesTags: ["player"],
+      invalidatesTags: ['player'],
     }),
     deletePlayer: builder.mutation({
       query: (id) => ({
         url: `player/delete/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["player"],
+      invalidatesTags: ['player'],
     }),
     invitePlayer: builder.mutation({
       query: ({ id, data }) => ({
         url: `player/invite-player/${id}`,
-        method: "POST",
+        method: 'POST',
         body: data,
       }),
-      invalidatesTags: ["player"],
+      invalidatesTags: ['player'],
     }),
     sendPlayerTip: builder.mutation({
       query: ({ id, data }) => ({
         url: `player/send-money/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: ["player"],
+      invalidatesTags: ['player'],
     }),
   }),
 });
