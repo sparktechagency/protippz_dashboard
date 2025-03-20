@@ -533,7 +533,7 @@ const TeamManagement = () => {
             )}
           </div>
         </div>
-        <div>
+        <div className='flex gap-2'>
           <Select
             placeholder="All"
             defaultValue="false"
