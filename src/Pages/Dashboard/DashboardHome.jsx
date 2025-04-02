@@ -15,7 +15,6 @@ import icon7 from '../../assets/icons/team.png';
 import RedeemRequest from '../../Components/Dashboard/RedeemRequest ';
 const DashboardHome = () => {
   const { data, isLoading } = useGetDashboardDataQuery();
-  console.log(data);
 
   const formatData = [
     {

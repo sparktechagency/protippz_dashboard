@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Table, Button, Tag, Modal } from "antd";
-import { EyeOutlined } from "@ant-design/icons";
-import UserImageName from "./UserImageName";
-import { imageUrl} from "../../Utils/BaseUrl";
-import { useUpdateStatusRedeemRequestMutation } from "../../Redux/Apis/redeemApis";
-import toast from "react-hot-toast";
+/* eslint-disable react/prop-types */
+import { useState } from 'react';
+import { Table, Button, Tag, Modal } from 'antd';
+import { EyeOutlined } from '@ant-design/icons';
+import UserImageName from './UserImageName';
+import { imageUrl } from '../../Utils/BaseUrl';
+import { useUpdateStatusRedeemRequestMutation } from '../../Redux/Apis/redeemApis';
+import toast from 'react-hot-toast';
 const RewardTable = ({ data, pagination }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [modalContent, setModalContent] = useState(null);
@@ -15,18 +16,20 @@ const RewardTable = ({ data, pagination }) => {
       try {
         const id = record?._id;
         if (!id) {
-          toast.error("Invalid record. Please try again.");
+          toast.error('Invalid record. Please try again.');
           return;
         }
 
-        const data = { status: "Completed" };
+        const data = { status: 'Completed' };
         const response = await updateStatus({ id, data }).unwrap();
         if (response.success) {
           toast.success(`Status updated successfully`);
+          setIsModalVisible(false);
+          closeModal();
         }
       } catch (error) {
         toast.error(`Failed to update status. Error: ${error.message}`);
-        console.error("Update failed:", error);
+        console.error('Update failed:', error);
       }
     };
 
@@ -37,11 +40,11 @@ const RewardTable = ({ data, pagination }) => {
             <img
               src={`${imageUrl(record?.reward?.reward_image)}`}
               alt="Reward"
-              style={{ width: "100px" }}
+              style={{ width: '100px' }}
             />
           </div>
           <p>
-            <strong>User's Name:</strong> {record?.user?.name}
+            <strong>User&apos;s Name:</strong> {record?.user?.name}
           </p>
           <p>
             <strong>Email:</strong> {record?.email}
@@ -68,10 +71,10 @@ const RewardTable = ({ data, pagination }) => {
             <strong>Service:</strong> {record?.status}
           </p>
           <Button
-            disabled={record?.status === "Completed"}
+            disabled={record?.status === 'Completed'}
             onClick={() => handleUpdate(record)}
           >
-            {isUpdating ? "Accepting..." : "Mark as completed"}
+            {isUpdating ? 'Accepting...' : 'Mark as completed'}
           </Button>
         </div>
       );
@@ -82,11 +85,11 @@ const RewardTable = ({ data, pagination }) => {
             <img
               src={`${imageUrl(record?.reward?.reward_image)}`}
               alt="Reward"
-              style={{ width: "100px" }}
+              style={{ width: '100px' }}
             />
           </div>
           <p>
-            <strong>User's Name:</strong> {record?.user?.name}
+            <strong>User&apos;s Name:</strong> {record?.user?.name}
           </p>
           {/* <p><strong>Email:</strong> {record.email}</p> */}
           <p>
@@ -105,7 +108,7 @@ const RewardTable = ({ data, pagination }) => {
             <strong>Status:</strong> {record?.status}
           </p>
           <p>
-            <strong>Shipping Address:</strong> {record?.streetAddress}{" "}
+            <strong>Shipping Address:</strong> {record?.streetAddress}{' '}
             {record?.state} {record?.zipCode}
           </p>
           {/* <p><strong>Service:</strong> {record?.status}</p> */}
@@ -129,8 +132,8 @@ const RewardTable = ({ data, pagination }) => {
     // },
     {
       title: "User's Name",
-      dataIndex: "userName",
-      key: "userName",
+      dataIndex: 'userName',
+      key: 'userName',
       render: (_, record) => (
         <UserImageName
           name={record.user?.name}
@@ -139,41 +142,41 @@ const RewardTable = ({ data, pagination }) => {
       ),
     },
     {
-      title: "Contact Number",
-      dataIndex: "phone",
-      key: "phone",
+      title: 'Contact Number',
+      dataIndex: 'phone',
+      key: 'phone',
       render: (_, record) => <span>{record?.user?.phone}</span>,
     },
     {
-      title: "Reward Name",
-      dataIndex: "reward",
-      key: "reward",
+      title: 'Reward Name',
+      dataIndex: 'reward',
+      key: 'reward',
       render: (reward) => <span>{reward?.name}</span>,
     },
     {
-      title: "Category",
-      dataIndex: "category",
-      key: "category",
+      title: 'Category',
+      dataIndex: 'category',
+      key: 'category',
       render: (category) => <span>{category?.name}</span>,
     },
     {
-      title: "Redeemed Points",
-      dataIndex: "redeemedPoint",
-      key: "redeemedPoint",
+      title: 'Redeemed Points',
+      dataIndex: 'redeemedPoint',
+      key: 'redeemedPoint',
     },
     {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
       render: (status) => {
-        const color = status === "Pending" ? "orange" : "green";
+        const color = status === 'Pending' ? 'orange' : 'green';
         return (
           <Tag
             color={color}
             style={{
-              borderRadius: "8px",
-              padding: "5px 10px",
-              fontSize: "14px",
+              borderRadius: '8px',
+              padding: '5px 10px',
+              fontSize: '14px',
             }}
           >
             {status}
@@ -182,16 +185,16 @@ const RewardTable = ({ data, pagination }) => {
       },
     },
     {
-      title: "Action",
-      dataIndex: "action",
-      key: "action",
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
       render: (_, record) => (
         <Button
           type="primary"
           icon={<EyeOutlined />}
           shape="circle"
           onClick={() => handleActionClick(record)}
-          style={{ backgroundColor: "#52c41a", borderColor: "#52c41a" }}
+          style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
         />
       ),
     },

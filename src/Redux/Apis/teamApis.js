@@ -4,7 +4,6 @@ const teamApis = baseApi.injectEndpoints({
     getAllTeam: builder.query({
       query: ({ searchTerm, page, limit, league, signIn }) => {
         const param = { searchTerm, page, limit, signIn };
-        console.log(signIn);
         if (league) {
           param.league = league;
         }

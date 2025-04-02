@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 // import { Spin, Upload } from 'antd';
 // import React, { useState, useEffect } from 'react';
 // import { useUploadCsvMutation } from '../../Redux/Apis/manageApis';
@@ -23,7 +24,6 @@
 //                 toast.error(error?.data);
 //             });
 //     };
-
 
 //     return (
 //         <div className="space-y-4">
@@ -57,58 +57,79 @@
 
 // export default UploadCsv;
 
-
-import { Spin, Upload } from "antd";
-import { useState } from "react";
-import { useUploadCsvMutation } from "../../Redux/Apis/manageApis";
-import { PlusOutlined } from "@ant-design/icons";
-import toast from "react-hot-toast";
+import { Progress, Upload } from 'antd';
+import { useEffect, useState } from 'react';
+import { useUploadCsvMutation } from '../../Redux/Apis/manageApis';
+import { PlusOutlined } from '@ant-design/icons';
+import toast from 'react-hot-toast';
+import { useSocket } from '../../Context/SocketContext';
 
 const UploadCsv = ({ setOpenCsv }) => {
   const [upload, { isLoading }] = useUploadCsvMutation();
   const [selectedFile, setSelectedFile] = useState(null);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
+  const { socket, onlineUser } = useSocket();
+  const [progress, setProgress] = useState({
+    completed: 0,
+    total: 0,
+  });
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('upload-progress', (data) => {
+        setProgress(data);
+      });
+    }
+  }, [socket, onlineUser]);
 
   const handleFileSelect = (file) => {
-    const isCsv = file.type === "text/csv" || file.name.endsWith(".csv");
+    const isCsv = file.type === 'text/csv' || file.name.endsWith('.csv');
     if (!isCsv) {
-      setMessage("Only CSV files are allowed.");
-      toast.error("Only CSV files are allowed.");
+      setMessage('Only CSV files are allowed.');
+      toast.error('Only CSV files are allowed.');
       return false;
     }
 
-    setMessage("");
+    setMessage('');
     setSelectedFile(file);
-
-    console.log("File selected:", {
-      name: file.name,
-      size: file.size,
-      type: file.type,
-    });
-
     return false;
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!selectedFile) {
-      toast.error("Please select a file to upload.");
+      toast.error('Please select a file to upload.');
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", selectedFile);
+    formData.append('file', selectedFile);
 
-    upload(formData)
-      .unwrap()
-      .then((response) => {
-        toast.success("File uploaded successfully!");
+    try {
+      const res = await upload(formData).unwrap();
+      if (res?.data) {
+        toast.success(res?.data || 'File uploaded successfully!');
         setSelectedFile(null);
-      })
-      .catch((error) => {
-        toast.error(error?.data || "Upload failed.");
+        setOpenCsv(false);
+        setProgress({
+          completed: 0,
+          total: 0,
+        });
+        setSelectedFile(null);
+        window.reload();
+      }
+    } catch (error) {
+      toast.success(error?.data || 'Upload failed.');
+      setOpenCsv(false);
+      setProgress({
+        completed: 0,
+        total: 0,
       });
+      setSelectedFile(null);
+      window.reload();
+    }
   };
 
+  const progressPercent = (progress?.completed / progress?.total) * 100;
   return (
     <div className="space-y-4">
       <Upload.Dragger
@@ -119,11 +140,22 @@ const UploadCsv = ({ setOpenCsv }) => {
         className="border-dashed rounded-lg"
       >
         {isLoading ? (
-          <Spin />
+          <div>
+            <p className="text-2xl mb-2">Uploading progress</p>
+            <p className="text-xl font-bold">
+              <span className="text-green-500">{progress?.completed}</span> /
+              <span className="text-blue-600">{progress?.total}</span>
+            </p>
+            <Progress
+              strokeLinecap="butt"
+              strokeColor={'#22C55E'}
+              percent={progressPercent}
+            />
+          </div>
         ) : (
           <div className="flex flex-col items-center text-green-500">
             <PlusOutlined className="text-2xl mb-2" />
-            <span>{selectedFile ? "File Selected" : "Add CSV File"}</span>
+            <span>{selectedFile ? 'File Selected' : 'Add CSV File'}</span>
           </div>
         )}
       </Upload.Dragger>
@@ -140,7 +172,7 @@ const UploadCsv = ({ setOpenCsv }) => {
         onClick={handleUpload}
         disabled={!selectedFile || isLoading}
       >
-        {isLoading ? "Uploading..." : "Upload File"}
+        {isLoading ? 'Uploading...' : 'Upload File'}
       </button>
       <button
         type="button"
@@ -157,4 +189,3 @@ const UploadCsv = ({ setOpenCsv }) => {
 };
 
 export default UploadCsv;
-

@@ -47,7 +47,6 @@ const IncomeOverView = () => {
       </div>
     );
   }
-  console.log(chartData);
   // Handle error state
   if (isError) {
     return (

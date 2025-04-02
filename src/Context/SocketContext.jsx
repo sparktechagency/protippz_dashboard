@@ -1,59 +1,58 @@
-import React from "react";
-import { createContext, useState, useEffect, useContext } from "react";
-import io from "socket.io-client";
-import { useGetProfileQuery } from "../Redux/Apis/authApi";
-import { useGetNotificationsQuery } from "../Redux/Apis/notificationsApis";
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import io, { Socket } from 'socket.io-client';
+import { url } from '../Utils/BaseUrl';
+import { jwtDecode } from 'jwt-decode';
+const SocketContext = createContext({
+  socket: null,
+  onlineUser: [],
+});
 
-const SocketContextData = createContext();
-
-export const useSocketContext = () => {
-  return useContext(SocketContextData);
+export const useSocket = () => {
+  return useContext(SocketContext);
 };
 
-const SocketContext = ({ children }) => {
+const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
-  const [onlineUsers, setOnlineUsers] = useState([]);
-  const { data } = useGetProfileQuery();
-  const [notifications, setNotifications] = useState([]);
-  const [notificationLimit, setNotificationLimit] = useState(50);
-  const { data: notificationsData, isLoading: isLoadingNotifications } =
-    useGetNotificationsQuery({ page: 1, limit: notificationLimit });
-  // useEffect(() => {
-  //     if (data?.data) {
-  //         if (notificationsData?.data?.length > 0) {
-  //             setNotifications(notificationsData?.data)
-  //         }
-  //         const socket = io(`http://13.43.16.29:5000?userId=${data?.data?._id}`);
-  //         setSocket(socket);
-  //         socket.on("getOnlineUsers", (users) => {
-  //             setOnlineUsers(users);
-  //         });
-  //         socket.on("new-notification", (notification) => {
-  //             console.log('notification', notification);
-  //             setNotifications(prev => [notification, ...prev])
-  //         });
-  //         return () => socket.close();
-  //     } else {
-  //         if (socket) {
-  //             socket.close();
-  //             setSocket(null);
-  //         }
-  //     }
-  // }, [data, notificationsData]);
-  const socketData = {
-    socket,
-    onlineUsers,
-    isLoadingNotifications,
-    notifications,
-    totalNotifications: notificationsData?.pagination?.totalItems,
-    setNotificationLimit,
-    notificationLimit,
-  };
+  const [onlineUser, setOnlineUser] = useState([]);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) {
+      setToken(savedToken);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!token) return;
+    const decoded = jwtDecode(token);
+
+    const socketConnection = io(`${url}`, {
+      // auth: {
+      //   token: token,
+      // },
+      query: {
+        id: decoded.id,
+      },
+    });
+
+    socketConnection.on('onlineUser', (data) => {
+      setOnlineUser(data);
+    });
+
+    setSocket(socketConnection);
+
+    return () => {
+      socketConnection.disconnect();
+    };
+  }, [token]);
+
   return (
-    <SocketContextData.Provider value={socketData}>
+    <SocketContext.Provider value={{ socket, onlineUser }}>
       {children}
-    </SocketContextData.Provider>
+    </SocketContext.Provider>
   );
 };
-
-export default SocketContext;
+export default SocketProvider;
