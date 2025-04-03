@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import {
   Table,
@@ -58,7 +59,7 @@ const RewardManagement = () => {
   const [createRewardCategory] = useCreateRewardCategoryMutation();
   const [updateRewardCategory] = useUpdateRewardCategoryMutation();
   const [deleteRewardCategory] = useDeleteRewardCategoryMutation();
-
+  console.log(categoryData?.data?.result);
   const rewardColumns = [
     { title: 'Reward Name', dataIndex: 'name', key: 'name' },
     {
@@ -102,7 +103,7 @@ const RewardManagement = () => {
             <EditOutlined />
           </button>
           <button
-            onClick={() => handleDeleteReward(record.id)}
+            onClick={() => handleDeleteReward(record?.id)}
             className="bg-red-500 text-white text-xl p-2 py-1 rounded-md"
           >
             <DeleteOutlined />
@@ -143,11 +144,7 @@ const RewardManagement = () => {
       dataIndex: 'image',
       key: 'image',
       render: (image) => (
-        <img
-          src={`${imageUrl({ image })}`}
-          alt="category"
-          className="w-10 h-10"
-        />
+        <img src={`${imageUrl(image)}`} alt="category" className="w-10 h-10" />
       ),
     },
     {
@@ -162,7 +159,7 @@ const RewardManagement = () => {
             <EditOutlined />
           </button>
           <button
-            onClick={() => handleDeleteCategory(record.id)}
+            onClick={() => handleDeleteCategory(record?.id)}
             className="bg-red-500 text-white text-xl p-2 py-1 rounded-md"
           >
             <DeleteOutlined />
@@ -267,7 +264,7 @@ const RewardManagement = () => {
           formData.append(key, data[key]);
         });
         if (selectedRecord) {
-          updateReward({ id: selectedRecord._id, data: formData })
+          updateReward({ id: selectedRecord?._id, data: formData })
             .unwrap()
             .then((res) => {
               toast.success(res?.message);
@@ -304,7 +301,7 @@ const RewardManagement = () => {
           formData.append(key, data[key]);
         });
         if (selectedRecord) {
-          updateRewardCategory({ id: selectedRecord._id, data: formData })
+          updateRewardCategory({ id: selectedRecord?._id, data: formData })
             .unwrap()
             .then((res) => {
               toast.success(res?.message);
@@ -351,7 +348,7 @@ const RewardManagement = () => {
           <h4 className="text-lg font-semibold">Reward Management</h4>
         </div>
         <Input
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e?.target?.value)}
           placeholder="Search here..."
           prefix={<FaSearch />}
           className="w-64"
