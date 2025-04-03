@@ -1,68 +1,12 @@
 /* eslint-disable react/prop-types */
-// import { Spin, Upload } from 'antd';
-// import React, { useState, useEffect } from 'react';
-// import { useUploadCsvMutation } from '../../Redux/Apis/manageApis';
-// import { PlusOutlined } from '@ant-design/icons';
-// import toast from 'react-hot-toast';
-
-// const UploadCsv = ({ setOpenCsv }) => {
-//     const [upload, { isLoading }] = useUploadCsvMutation();
-//     const handleUpload = (file) => {
-//         if (!file) {
-//             setMessage('Please select a file to upload.');
-//             return false;
-//         }
-//         const formData = new FormData();
-//         formData.append('file', file);
-
-//         upload(formData)
-//             .unwrap()
-//             .then((response) => {
-//                 toast.success(response);
-//             })
-//             .catch((error) => {
-//                 toast.error(error?.data);
-//             });
-//     };
-
-//     return (
-//         <div className="space-y-4">
-//             <Upload.Dragger
-//                 name="file"
-//                 accept='.csv'
-//                 beforeUpload={handleUpload}
-//                 showUploadList={false}
-//                 className="border-dashed rounded-lg"
-//             >
-//                 {
-//                     isLoading ? <Spin /> : <div className="flex flex-col items-center text-green-500">
-//                         <PlusOutlined className="text-2xl mb-2" />
-//                         <span>Add CSV File</span>
-//                     </div>
-//                 }
-
-//             </Upload.Dragger>
-//             <button
-//                 type="button"
-//                 className="w-full bg-green-500 mt-4 py-2 rounded-md text-white"
-//                 onClick={() => {
-//                     setOpenCsv(false);
-//                 }}
-//             >
-//                 Close
-//             </button>
-//         </div>
-//     );
-// };
-
-// export default UploadCsv;
-
-import { Progress, Upload } from 'antd';
+import { Modal, Progress, Upload } from 'antd';
 import { useEffect, useState } from 'react';
 import { useUploadCsvMutation } from '../../Redux/Apis/manageApis';
 import { PlusOutlined } from '@ant-design/icons';
 import toast from 'react-hot-toast';
 import { useSocket } from '../../Context/SocketContext';
+import axios from 'axios';
+import { url } from '../../Utils/BaseUrl';
 
 const UploadCsv = ({ setOpenCsv }) => {
   const [upload, { isLoading }] = useUploadCsvMutation();
@@ -73,6 +17,8 @@ const UploadCsv = ({ setOpenCsv }) => {
     completed: 0,
     total: 0,
   });
+  const [cancel,setCancel] = useState(false);
+
 
   useEffect(() => {
     if (socket) {
@@ -106,32 +52,44 @@ const UploadCsv = ({ setOpenCsv }) => {
 
     try {
       const res = await upload(formData).unwrap();
-      if (res?.data) {
-        toast.success(res?.data || 'File uploaded successfully!');
+      if (res?.success) {
+        toast.success(res?.message || 'File uploaded successfully!');
         setSelectedFile(null);
         setOpenCsv(false);
-        setProgress({
-          completed: 0,
-          total: 0,
-        });
         setSelectedFile(null);
-        window.reload();
       }
     } catch (error) {
-      toast.success(error?.data || 'Upload failed.');
+      toast.error(error?.message || 'Upload failed.');
       setOpenCsv(false);
       setProgress({
         completed: 0,
         total: 0,
       });
       setSelectedFile(null);
-      window.reload();
     }
   };
 
   const progressPercent = (progress?.completed / progress?.total) * 100;
+  const closeHandler = async () => {
+
+    try {
+     const res = await axios.post(`${url}/stop-csv-upload`, {
+        stop: true,
+      });
+
+      if(res?.data?.stop){
+        setCancel(true);
+      }
+    } catch (error) {
+      console.error('Error stopping CSV upload:', error);
+    }
+  };
   return (
-    <div className="space-y-4">
+   <div>
+
+
+
+<div className="space-y-4">
       <Upload.Dragger
         name="file"
         accept=".csv"
@@ -149,7 +107,7 @@ const UploadCsv = ({ setOpenCsv }) => {
             <Progress
               strokeLinecap="butt"
               strokeColor={'#22C55E'}
-              percent={progressPercent}
+              percent={progressPercent?.toFixed(2)}
             />
           </div>
         ) : (
@@ -176,15 +134,43 @@ const UploadCsv = ({ setOpenCsv }) => {
       </button>
       <button
         type="button"
-        className="w-full bg-gray-500 mt-4 py-2 rounded-md text-white"
+        className="w-full bg-red-500 mt-4 py-2 rounded-md text-white"
         onClick={() => {
           setSelectedFile(null);
           setOpenCsv(false);
+          closeHandler();
         }}
       >
-        Close
+        Cancel Upload
       </button>
     </div>
+
+    <Modal open={cancel} onCancel={() => setCancel(false)} footer={null} width={400}>
+        <div>
+          <p className="text-xl font-bold mb-3">Upload Cancelled</p>
+          <div>
+            <p className="text-2xl mb-2 text-center">Total Uploaded</p>
+            <p className="text-xl font-bold text-center">
+              <span className="text-green-500">{progress?.completed}</span> /
+              <span className="text-blue-600">{progress?.total}</span>
+            </p>
+            <Progress
+              strokeLinecap="butt"
+              strokeColor={'#22C55E'}
+              percent={progressPercent?.toFixed(2)}
+            />
+          </div>
+          <button
+            type="button"
+            className="w-full bg-blue-500 mt-4 py-2 rounded-md text-white"
+            onClick={() => setCancel(false)}
+          >
+            Close
+          </button>
+        </div>
+    </Modal>
+   </div>
+
   );
 };
 

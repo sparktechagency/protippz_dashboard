@@ -59,7 +59,7 @@ const RewardManagement = () => {
   const [createRewardCategory] = useCreateRewardCategoryMutation();
   const [updateRewardCategory] = useUpdateRewardCategoryMutation();
   const [deleteRewardCategory] = useDeleteRewardCategoryMutation();
-  console.log(categoryData?.data?.result);
+
   const rewardColumns = [
     { title: 'Reward Name', dataIndex: 'name', key: 'name' },
     {

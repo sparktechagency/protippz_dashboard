@@ -1,31 +1,30 @@
-import { useRef, useState, useEffect } from "react";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { SettingLinks, SidebarLink } from "../../Utils/Sideber/SidebarLink";
-import { IoSettings } from "react-icons/io5";
-import Button from "./Button";
-import { MdArrowForwardIos } from "react-icons/md";
-import { HiLogout } from "react-icons/hi";
-import logo from "../../assets/logo.png";
-import { FaFileCsv } from "react-icons/fa";
-import { Modal } from "antd";
+import { useRef, useState, useEffect } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { SettingLinks, SidebarLink } from '../../Utils/Sideber/SidebarLink';
+import { IoSettings } from 'react-icons/io5';
+import Button from './Button';
+import { MdArrowForwardIos } from 'react-icons/md';
+import { HiLogout } from 'react-icons/hi';
+import logo from '../../assets/logo.png';
+import { FaFileCsv } from 'react-icons/fa';
+import { Modal } from 'antd';
 
-import UploadCsv from "./UploadCsv";
+import UploadCsv from './UploadCsv';
 const Sidebar = () => {
-  // State
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const [openCsv, setOpenCsv] = useState(false);
   const [setting_active, set_setting_active] = useState(false);
   const navigate = useNavigate();
+
   const ref = useRef(null);
   const toggleHandler = () => {
     setOpen(!open);
   };
-  // effects
-  // active parents by targeting children
+
   useEffect(() => {
     if (!ref.current) return;
-    if (ref.current.querySelector(".active")) {
+    if (ref.current.querySelector('.active')) {
       setOpen(true);
       set_setting_active(true);
     } else {
@@ -45,10 +44,10 @@ const Sidebar = () => {
           }}
           to={item?.path}
           style={{
-            width: "100%",
-            justifyContent: "start",
-            paddingLeft: "14px",
-            paddingRight: "14px",
+            width: '100%',
+            justifyContent: 'start',
+            paddingLeft: '14px',
+            paddingRight: '14px',
           }}
           className="button-white w-full whitespace-nowrap links"
           key={item?.path}
@@ -61,11 +60,11 @@ const Sidebar = () => {
           setOpenCsv(true);
         }}
         style={{
-          width: "100%",
-          justifyContent: "start",
-          paddingLeft: "14px",
-          paddingRight: "14px",
-          border: "none",
+          width: '100%',
+          justifyContent: 'start',
+          paddingLeft: '14px',
+          paddingRight: '14px',
+          border: 'none',
         }}
         className="button-white w-full whitespace-nowrap links"
       >
@@ -75,13 +74,13 @@ const Sidebar = () => {
         <Button
           handler={toggleHandler}
           style={{
-            width: "100%",
-            justifyContent: "start",
-            paddingLeft: "14px",
-            paddingRight: "14px",
+            width: '100%',
+            justifyContent: 'start',
+            paddingLeft: '14px',
+            paddingRight: '14px',
           }}
           classNames={`button-white w-full whitespace-nowrap links ${
-            open || setting_active ? "active" : ""
+            open || setting_active ? 'active' : ''
           } `}
           text="Setting"
           icon={<IoSettings size={24} />}
@@ -89,7 +88,7 @@ const Sidebar = () => {
         <MdArrowForwardIos
           size={24}
           className={`${
-            open ? "rotate-90" : "rotate-0"
+            open ? 'rotate-90' : 'rotate-0'
           } absolute right-1 top-[50%] translate-y-[-50%] transition-all`}
         />
       </div>
@@ -97,7 +96,7 @@ const Sidebar = () => {
         ref={ref}
         className={`flex justify-start flex-col gap-1 transition-all rounded-md duration-300 overflow-hidden`}
         style={{
-          height: open ? `${ref.current.scrollHeight}px` : "0",
+          height: open ? `${ref.current.scrollHeight}px` : '0',
         }}
       >
         {SettingLinks?.map((item) => (
@@ -105,11 +104,11 @@ const Sidebar = () => {
             to={item?.path}
             key={item?.path}
             style={{
-              width: "100%",
-              justifyContent: "start",
-              paddingLeft: "14px",
-              paddingRight: "14px",
-              border: "none",
+              width: '100%',
+              justifyContent: 'start',
+              paddingLeft: '14px',
+              paddingRight: '14px',
+              border: 'none',
             }}
             className="button-white overflow-hidden rounded-md w-full whitespace-nowrap links"
           >
@@ -119,15 +118,15 @@ const Sidebar = () => {
       </div>
       <button
         onClick={() => {
-          localStorage.removeItem("token");
+          localStorage.removeItem('token');
           return navigate(`/login`);
         }}
         style={{
-          width: "100%",
-          justifyContent: "start",
-          paddingLeft: "14px",
-          paddingRight: "14px",
-          border: "none",
+          width: '100%',
+          justifyContent: 'start',
+          paddingLeft: '14px',
+          paddingRight: '14px',
+          border: 'none',
         }}
         className="button-white w-full whitespace-nowrap links"
       >
