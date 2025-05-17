@@ -39,6 +39,7 @@ import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
 
 const RewardManagement = () => {
+  const [page, setPage] = useState(1);
   const [isAddEditModalVisible, setIsAddEditModalVisible] = useState(false);
   const [selectedView, setSelectedView] = useState('Reward');
   const [selectedRecord, setSelectedRecord] = useState(null);
@@ -48,9 +49,9 @@ const RewardManagement = () => {
   const [searchTerm, setSearchTerm] = useState();
 
   const { data: rewardData, isLoading: isLoadingRewards } =
-    useGetAllRewardsQuery({ searchTerm, page: 1 });
+    useGetAllRewardsQuery({ searchTerm, page: page, limit: 30 });
   const { data: categoryData, isLoading: isLoadingCategories } =
-    useGetAllRewardCategoriesQuery({ searchTerm, page: 1 });
+    useGetAllRewardCategoriesQuery({ searchTerm, page: 1 ,limit: 30});
 
   const [createReward] = useCreateRewardMutation();
   const [updateReward] = useUpdateRewardMutation();
@@ -330,7 +331,19 @@ const RewardManagement = () => {
       message.error('Failed to save');
     }
   };
-
+  const pagination = {
+    position: ['bottomCenter'],
+    total:
+      selectedView === 'Reward'
+        ? rewardData?.data?.meta?.total || 0
+        : categoryData?.data?.meta?.total || 0,
+    pageSize: 30,
+    showSizeChanger: false,
+    responsive: true,
+    showTotal: (total, range) =>
+      `Showing ${range[0]}-${range[1]} out of ${total}`,
+    onChange: (page) => setPage(page),
+  };
   return (
     <div className="p-4 h-[80vh] overflow-y-scroll bg-[var(--bg-gray-20)]">
       <div className="flex justify-between items-center mb-4">
@@ -384,6 +397,8 @@ const RewardManagement = () => {
       >
         Add
       </Button>
+
+      {/* meta: { page: 1, limit: 10, total: 26, totalPage: 3 } */}
       <Table
         dataSource={
           selectedView === 'Reward'
@@ -393,7 +408,7 @@ const RewardManagement = () => {
         columns={selectedView === 'Reward' ? rewardColumns : categoryColumns}
         rowKey="id"
         loading={isLoadingRewards || isLoadingCategories}
-        pagination={{ position: ['bottomCenter'], pageSize: 10 }}
+        pagination={pagination}
       />
       <Modal
         visible={isAddEditModalVisible}
