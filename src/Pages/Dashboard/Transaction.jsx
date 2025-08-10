@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { Table, Input, Image } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { FaSearch } from 'react-icons/fa';
@@ -95,6 +95,7 @@ const Transaction = () => {
         />
       </div>
       <Table
+        scroll={{ x: 'max-content' }}
         loading={isLoading || isFetching}
         dataSource={transitions?.data?.result || []}
         columns={columns}

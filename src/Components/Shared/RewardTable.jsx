@@ -203,17 +203,18 @@ const RewardTable = ({ data, pagination }) => {
   return (
     <>
       <Table
+        scroll={{ x: 'max-content' }}
         dataSource={data}
         columns={columns}
         pagination={
           pagination
             ? {
-                pageSize: pagination.limit || 10,
-                total: pagination.total || 0,
-                current: pagination.current || 1,
-                onChange: pagination.handler,
-                showSizeChanger: false,
-              }
+              pageSize: pagination.limit || 10,
+              total: pagination.total || 0,
+              current: pagination.current || 1,
+              onChange: pagination.handler,
+              showSizeChanger: false,
+            }
             : false
         }
         rowKey="id"

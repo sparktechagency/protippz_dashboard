@@ -221,6 +221,7 @@ const UserManagement = () => {
 
       {/* Table with Pagination */}
       <Table
+        scroll={{ x: 'max-content' }}
         loading={isLoading || fetching || isFetching}
         dataSource={data?.data?.result || []}
         columns={columns}

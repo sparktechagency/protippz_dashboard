@@ -188,6 +188,7 @@ const TipManagement = () => {
 
       {/* Table */}
       <Table
+        scroll={{ x: 'max-content' }}
         loading={isLoading || isFetching}
         dataSource={data?.data?.result || []}
         columns={columns[activeTab]}

@@ -589,6 +589,7 @@ const TeamManagement = () => {
         }}
         dataSource={tableData}
         columns={columns}
+        scroll={{ x: 'max-content' }}
         rowKey="key"
         pagination={{
           position: ['bottomCenter'],

@@ -51,7 +51,7 @@ const RewardManagement = () => {
   const { data: rewardData, isLoading: isLoadingRewards } =
     useGetAllRewardsQuery({ searchTerm, page: page, limit: 30 });
   const { data: categoryData, isLoading: isLoadingCategories } =
-    useGetAllRewardCategoriesQuery({ searchTerm, page: 1 ,limit: 30});
+    useGetAllRewardCategoriesQuery({ searchTerm, page: 1, limit: 30 });
 
   const [createReward] = useCreateRewardMutation();
   const [updateReward] = useUpdateRewardMutation();
@@ -369,21 +369,19 @@ const RewardManagement = () => {
       </div>
       <div className="flex space-x-2 mb-3">
         <button
-          className={`${
-            selectedView === 'Reward'
+          className={`${selectedView === 'Reward'
               ? 'bg-green-500 text-white'
               : 'bg-green-100 text-green-500'
-          } px-4 rounded-md py-1`}
+            } px-4 rounded-md py-1`}
           onClick={() => setSelectedView('Reward')}
         >
           Reward
         </button>
         <button
-          className={`${
-            selectedView === 'Category'
+          className={`${selectedView === 'Category'
               ? 'bg-green-500 text-white'
               : 'bg-green-100 text-green-500'
-          } px-4 rounded-md py-1`}
+            } px-4 rounded-md py-1`}
           onClick={() => setSelectedView('Category')}
         >
           Category
@@ -400,6 +398,7 @@ const RewardManagement = () => {
 
       {/* meta: { page: 1, limit: 10, total: 26, totalPage: 3 } */}
       <Table
+        scroll={{ x: 'max-content' }}
         dataSource={
           selectedView === 'Reward'
             ? rewardData?.data?.result

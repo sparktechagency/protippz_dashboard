@@ -241,6 +241,7 @@ const LeagueManagement = () => {
 
       {/* Table */}
       <Table
+        scroll={{ x: 'max-content' }}
         loading={leagueLading || isFetching || isDeleting || isLoading}
         dataSource={data?.data?.result || []}
         columns={columns}

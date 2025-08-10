@@ -186,11 +186,10 @@ const PlayerManagement = () => {
       render: (_, record) => (
         <button
           onClick={() => handleInvite(record)}
-          className={`${
-            record?.invitedPassword || record?.userName
+          className={`${record?.invitedPassword || record?.userName
               ? 'bg-red-500'
               : 'bg-blue-500'
-          } text-white text-xl p-2 py-1 rounded-md`}
+            } text-white text-xl p-2 py-1 rounded-md`}
         >
           <MailOutlined />
         </button>
@@ -480,7 +479,7 @@ const PlayerManagement = () => {
                 ]}
                 filename={`user-management-${new Date().toISOString()}.csv`}
                 className="flex items-center ml-2 justify-center gap-2"
-                // onClick={() => setCsvReady(true)} // Set csvReady to true only when clicked
+              // onClick={() => setCsvReady(true)} // Set csvReady to true only when clicked
               >
                 <Button
                   style={{
@@ -525,9 +524,8 @@ const PlayerManagement = () => {
             disabled={selectItemId?.length === 0}
             icon={deletingSelect ? '' : <PlusOutlined className="rotate-45" />}
             onClick={handleDeleteManyPlayer}
-            className={`bg-red-500 mb-3 ${
-              selectItemId?.length === 0 ? 'cursor-not-allowed' : ''
-            }`}
+            className={`bg-red-500 mb-3 ${selectItemId?.length === 0 ? 'cursor-not-allowed' : ''
+              }`}
           >
             {deletingSelect ? <Spin size="small" /> : 'Delete Selected'}
           </Button>
@@ -543,6 +541,7 @@ const PlayerManagement = () => {
       </div>
 
       <Table
+        scroll={{ x: 'max-content' }}
         dataSource={players?.data?.result || []}
         columns={columns}
         rowSelection={{

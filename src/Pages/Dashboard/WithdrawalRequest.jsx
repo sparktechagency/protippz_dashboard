@@ -31,8 +31,8 @@ const WithdrawalRequest = () => {
         selectedView === 'NormalUser'
           ? "User's Name"
           : selectedView === 'Player'
-          ? "Player's Name"
-          : "Team's Name",
+            ? "Player's Name"
+            : "Team's Name",
       dataIndex: 'entityId',
       key: 'entityId',
       render: (entityId) => (
@@ -158,6 +158,7 @@ const WithdrawalRequest = () => {
         </Button>
       </div>
       <Table
+        scroll={{ x: 'max-content' }}
         loading={isLoading || isFetching}
         dataSource={data?.data?.result || []}
         columns={columns}
