@@ -53,7 +53,7 @@ const AppointmentsOverview = () => {
       {
         label: "Monthly Data",
         data: chartData || [],
-        backgroundColor: "#007bff",
+        backgroundColor: "#053697",
         borderRadius: 5,
       },
     ],

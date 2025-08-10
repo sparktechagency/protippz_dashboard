@@ -21,6 +21,7 @@ import Transaction from "../Pages/Dashboard/Transaction";
 import RewardManagement from "../Pages/Dashboard/RewardManagement";
 import WithdrawalRequest from "../Pages/Dashboard/WithdrawalRequest";
 import Partner from "../Pages/Dashboard/Partner";
+import Leaguelayout from "../Pages/League_Owner/Leaguelayout";
 
 export const Routes = createBrowserRouter([
     {
@@ -30,6 +31,10 @@ export const Routes = createBrowserRouter([
             {
                 path: '/',
                 element: <DashboardHome />
+            },
+            {
+                path: '/league-dashboard',
+                element: <Leaguelayout />
             },
             {
                 path: '/redeem-request',
