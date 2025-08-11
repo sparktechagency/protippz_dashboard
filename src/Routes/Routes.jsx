@@ -22,6 +22,7 @@ import RewardManagement from "../Pages/Dashboard/RewardManagement";
 import WithdrawalRequest from "../Pages/Dashboard/WithdrawalRequest";
 import Partner from "../Pages/Dashboard/Partner";
 import Leaguelayout from "../Pages/League_Owner/Leaguelayout";
+import LeagueTopTable from "../Pages/League_Owner/LeagueTopTable";
 
 export const Routes = createBrowserRouter([
     {
@@ -67,6 +68,10 @@ export const Routes = createBrowserRouter([
             {
                 path: '/user-management',
                 element: <UserManagement />
+            },
+            {
+                path: '/top-fans-management',
+                element: <LeagueTopTable />
             },
             {
                 path: '/league-management',

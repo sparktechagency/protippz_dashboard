@@ -1,10 +1,15 @@
-import { createContext, useContext, useEffect } from 'react';
-import { useGetProfileQuery } from '../Redux/Apis/authApi';
+import { createContext, useContext, useEffect } from "react";
+import { useGetProfileQuery } from "../Redux/Apis/authApi";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const { data: userData, isLoading, isFetching, refetch } = useGetProfileQuery();
+  const {
+    data: userData,
+    isLoading,
+    isFetching,
+    refetch,
+  } = useGetProfileQuery();
   const user = userData?.data;
   const loading = isLoading || isFetching;
 
@@ -13,7 +18,7 @@ export const UserProvider = ({ children }) => {
     try {
       await refetch();
     } catch (error) {
-      console.error('Failed to refetch user data', error);
+      console.error("Failed to refetch user data", error);
       throw error;
     }
   };
@@ -21,19 +26,19 @@ export const UserProvider = ({ children }) => {
   // Persist user data to localStorage when it changes
   useEffect(() => {
     if (user) {
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem("user", JSON.stringify(user));
     } else {
-      localStorage.removeItem('user');
+      localStorage.removeItem("user");
     }
   }, [user]);
 
   return (
-    <UserContext.Provider 
-      value={{ 
+    <UserContext.Provider
+      value={{
         user,
         loading,
         refetchUser,
-        isAuthenticated: !!user
+        isAuthenticated: !!user,
       }}
     >
       {!loading && children}
@@ -44,7 +49,7 @@ export const UserProvider = ({ children }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };

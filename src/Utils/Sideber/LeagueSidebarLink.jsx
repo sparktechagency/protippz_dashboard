@@ -1,7 +1,7 @@
 import { FaBasketballBall } from "react-icons/fa";
 import { FaMoneyBill, FaRegCircleUser, FaUserInjured } from "react-icons/fa6";
 import { LuCalendarClock } from "react-icons/lu";
-import { RiTeamFill } from "react-icons/ri";
+import { RiAlignTop, RiTeamFill } from "react-icons/ri";
 
 export const LeagueSidebarLink = [
   {
@@ -13,6 +13,11 @@ export const LeagueSidebarLink = [
     path: "/tip-management",
     label: "All Tip",
     icon: <FaMoneyBill size={24} />,
+  },
+  {
+    path: "/top-fans-management",
+    label: "Top Fans",
+    icon: <RiAlignTop size={24} />,
   },
   {
     path: "/league-management",
@@ -28,5 +33,5 @@ export const LeagueSidebarLink = [
     path: "/player-management",
     label: "All Player",
     icon: <FaUserInjured size={24} />,
-  }
+  },
 ];
